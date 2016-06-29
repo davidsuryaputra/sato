@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Auth;
 
 class HasAnyRole
 {
@@ -15,11 +16,11 @@ class HasAnyRole
      */
     public function handle($request, Closure $next, $role)
     {
-        // dd($role);
+
+        $loggedInRole = Auth::user()->role->name;
         // $loggedInRole = 'client';
-        $loggedInRole = 'owner';
         if($loggedInRole != $role){
-          return redirect('/denied/'.$role);
+          return redirect('home');
         }
 
       return $next($request);

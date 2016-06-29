@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'name', 'phone', 'address', 'city', 'role_id', 'showroom_id', 'balance', 
+        'email', 'password', 'name', 'phone', 'address', 'city', 'role_id', 'showroom_id', 'balance',
     ];
 
     /**
@@ -25,7 +25,15 @@ class User extends Authenticatable
     ];
 
     public function role(){
-        $this->belongsTo(Role::class);
+      return $this->belongsTo(Role::class);
+    }
+
+    public function showroom(){
+      return $this->belongsTo(Showroom::class);
+    }
+
+    public function handleShowroom(){
+      return $this->hasOne(Showroom::class);
     }
 
     public function hasRole($role){

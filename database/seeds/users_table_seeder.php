@@ -28,8 +28,8 @@ class users_table_seeder extends Seeder
             [
               'email' => 'manager@sato.co.id',
               'password' => bcrypt('123456789'),
-              'name'  => 'manager',
-              'address' => 'JL. Sato Manager',
+              'name'  => 'Rio',
+              'address' => 'JL. Sato Rio Manager',
               'city' => 'Gresik',
               'phone' => '085700000000',
               'showroom_id' => null,

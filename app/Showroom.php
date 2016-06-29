@@ -15,4 +15,17 @@ class Showroom extends Model
         'phone',
         'balance',
     ];
+
+    public function users(){
+      return $this->hasMany(User::class);
+    }
+
+    public function manager(){
+      return $this->hasOne(User::class);
+    }
+
+    public function pricings()
+    {
+      return $this->hasMany(Pricing::class);
+    }
 }

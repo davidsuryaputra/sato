@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('city');
             $table->string('phone');
             $table->integer('role_id')->unsigned();
-            $table->integer('showroom_id')->unsigned();
+            $table->integer('showroom_id')->nullable()->unsigned();
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('balance')->nullable();

@@ -51,8 +51,12 @@ Route::get('/home', 'HomeController@index');
 
 //route inti
 
+Route::get('cek', function(){
+  return dd(Auth::user()->showroom->name);
+});
+
 //owner
-Route::group(['prefix' => 'owner', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'owner', 'middleware' => ['auth', 'role:owner']], function () {
 
   //input showrooms baru >> assign manager (detail n salary)
   Route::get('showrooms', 'OwnerController@indexShowroom')->name('owner.showrooms');
@@ -74,148 +78,55 @@ Route::group(['prefix' => 'owner', 'middleware' => 'auth'], function () {
     // /managers
   Route::get('managers', 'OwnerController@indexManager')->name('owner.managers.index');
 
-  Route::get('managers/create', function () {
-    return view('backend.owner.managers.create');
-  });
+  Route::get('managers/create', 'OwnerController@createManager')->name('owner.managers.create');
 
   Route::post('managers/create', 'OwnerController@storeManager')->name('owner.managers.store');
 
   Route::get('managers/{id}/delete', 'OwnerController@destroyManager')->name('owner.managers.destroy');
 
   Route::get('managers/{id}/edit', 'OwnerController@editManager')->name('owner.managers.edit');
-
-/*
-  //laporan
-
-  Route::get('reports', function () {
-    return view('backend.owner.reports.list');
-  });
-
-  Route::get('reports/showroom', function () {
-    return view('backend.owner.reports.showroom_list');
-  });
-
-  Route::get('reports/showroom/1', function () {
-    // return 'income outcome transaction, stock, asset, bonus report';
-    return view('backend.owner.reports.display');
-  });
-
-  Route::get('messages', function () {
-    return view('backend.owner.messages.list');
-  });
-
-  Route::get('messages/create', function () {
-    return view('backend.owner.messages.create');
-  });
-
-  Route::get('messages/1', function () {
-    return view('backend.owner.messages.display');
-  });
-
-  Route::get('messages/1/edit', function () {
-    return 'edit messages';
-  });
-  */
-
+  Route::patch('managers/{id}/update', 'OwnerController@updateManager')->name('owner.managers.update');
 
 });
 
-/*
+
 //manager
-Route::group(['prefix' => 'manager', 'middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth', 'role:manager']], function () {
 
   //laporan keuangan, stock, aset
-  Route::get('/', function () {
-    return 'income outcome transaction, stock, asset, bonus report';
-  });
 
   //input accountant, operator, cleaner
-  Route::get('employees', function () {
-    return 'all employee';
-  });
+  Route::get('employees', 'ManagerController@indexEmployee')->name('manager.employees.index');
 
-  Route::get('employees/create', function () {
-    return 'add employee form';
-  });
+  Route::get('employees/create', 'ManagerController@createEmployee')->name('manager.employees.create');
+  Route::post('employees/store', 'ManagerController@storeEmployee')->name('manager.employees.store');
 
-  Route::get('employees/1', function () {
-    return 'show employee profile';
-  });
+  Route::get('employees/{id}/edit', 'ManagerController@editEmployee')->name('manager.employees.edit');
+  Route::patch('employees/{id}/update', 'ManagerController@updateEmployee')->name('manager.employees.update');
 
-  Route::get('employees/1/edit', function () {
-    return 'edit role';
-  });
+  Route::get('employees/{id}/delete', 'ManagerController@destroyEmployee')->name('manager.employees.destroy');
 
     //aturan tarif, gaji, insentif
       // /pricings /pricings/create /pricings/{id} /pricings/{id}/edit
-  Route::get('pricings', function () {
-    return 'all pricing';
-  });
+  Route::get('pricings', 'ManagerController@indexPricing')->name('manager.pricings.index');
 
-  Route::get('pricings/create', function () {
-    return 'add pricing form';
-  });
+  Route::get('pricings/create', 'ManagerController@createPricing')->name('manager.pricings.create');
+  Route::post('pricings/store', 'ManagerController@storePricing')->name('manager.pricings.store');
 
-  Route::get('pricings/1', function () {
-    return 'show pricing profile';
-  });
+  Route::get('pricings/{id}/edit', 'ManagerController@editPricing')->name('manager.pricings.edit');
+  Route::patch('pricings/{id}/update', 'ManagerController@updatePricing')->name('manager.pricings.update');
 
-  Route::get('pricings/1/edit', function () {
-    return 'edit pricing form';
-  });
+  Route::get('pricings/{id}/delete', 'ManagerController@destroyPricing')->name('manager.pricings.destroy');
 
   // /salaries /salaries/create /salaries/{id} /salaries/{id}/edit
-  Route::get('salaries', function () {
-    return 'all salary';
-  });
 
-  Route::get('salaries/create', function () {
-    return 'add salary form';
-  });
-
-  Route::get('salaries/1', function () {
-    return 'show salary profile';
-  });
-
-  Route::get('salaries/1/edit', function () {
-    return 'edit salary form';
-  });
 
   // /bonuses /bonuses/create /bonuses/{id} /bonuses/{id}/edit
-  Route::get('bonuses', function () {
-    return 'all bonus';
-  });
 
-  Route::get('bonuses/create', function () {
-    return 'add bonus form';
-  });
-
-  Route::get('bonuses/1', function () {
-    return 'show bonus profile';
-  });
-
-  Route::get('bonuses/1/edit', function () {
-    return 'edit bonus form';
-  });
-
-  Route::get('messages', function () {
-    return 'list all message';
-  });
-
-  Route::get('messages/create', function () {
-    return 'create messages';
-  });
-
-  Route::get('messages/1', function () {
-    return 'display messages';
-  });
-
-  Route::get('messages/1/edit', function () {
-    return 'edit messages';
-  });
 
 });
 
+/*
 //accountant
 Route::group(['prefix' => 'accountant', 'middleware' => 'auth'], function () {
 
@@ -277,11 +188,11 @@ Route::group(['prefix' => 'accountant', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => 'operator', 'middleware' => 'auth'], function () {
 
   //stock
-    //masuk
-    //keluar
+    //income
+    //outcome
   //asset
-    //masuk
-    //keluar
+    //income
+    //outcome
   //message
     //tulis
 
@@ -363,38 +274,5 @@ Route::group(['prefix' => 'client', 'middleware' => 'auth'], function () {
     return 'edit top up as long as not yet approved';
   });
 
-});
-*/
-
-
-//Guest
-//Route::resource('login', 'LoginController', ['only' => ['index', 'store']]);
-
-/*
-//LoggedIn
-Route::group(['middleware' => 'isLoggedIn'], function (){
-
-  Route::get('dashboard', function (){
-    return 'You are logged in user, show dashboard depends on position';
-  });
-
-
-});
-*/
-
-/*
-//Admin
-Route::group(['middleware' => 'isAdministrator'], function (){
-  Route::get('dashboard', function (){
-    return 'Logged in as Administrator';
-  });
-});
-
-
-//Owner
-Route::group(['middleware' => 'isOwner'], function (){
-    Route::get('dashboardOwner', function (){
-      return 'Logged in as Owner';
-    });
 });
 */

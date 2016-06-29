@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Owner')
+@section('title', 'Manager')
 
 @section('name', Auth::user()->name)
 
-@section('role', 'Owner')
+@section('role', 'Manager')
 
 @section('sidebar-menu')
 <ul class="sidebar-menu">
@@ -15,53 +15,41 @@
     </a>
   </li>
 
+  @if($showroomName != "Belum Ada Izin")
   <li class="treeview">
     <a href="#">
-      <i class="fa fa-home"></i> <span>Outlet</span> <i class="fa fa-angle-left pull-right"></i>
+      <i class="fa fa-home"></i> <span>Pegawai</span> <i class="fa fa-angle-left pull-right"></i>
     </a>
 
     <ul class="treeview-menu">
-      <li><a href="{{ url('owner/showrooms') }}"><i class="fa fa-circle-o"></i> Semua Outlet</a></li>
-      <li><a href="{{ url('owner/showrooms/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
+      <li><a href="{{ url('employees') }}"><i class="fa fa-circle-o"></i> Semua Pegawai</a></li>
+      <li><a href="{{ url('employees/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
     </ul>
 
   </li>
 
   <li class="treeview">
     <a href="#">
-      <i class="fa fa-edit"></i> <span>Manajer</span>
+      <i class="fa fa-edit"></i> <span>Tarif</span>
       <i class="fa fa-angle-left pull-right"></i>
     </a>
     <ul class="treeview-menu">
-      <li><a href="{{ url('owner/managers') }}"><i class="fa fa-circle-o"></i> Semua Manajer</a></li>
-      <li><a href="{{ url('owner/managers/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
+      <li><a href="{{ url('pricings') }}"><i class="fa fa-circle-o"></i> Semua Tarif</a></li>
+      <li><a href="{{ url('pricings/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
     </ul>
   </li>
+  @endif
 
-  {{--
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-envelope"></i> <span>Pesan</span>
-      <small class="label pull-right bg-yellow">12</small>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="{{ url('owner/messages') }}"><i class="fa fa-circle-o"></i> Semua Pesan</a></li>
-      <li><a href="{{ url('owner/messages/create') }}"><i class="fa fa-circle-o"></i> Tulis Pesan</a></li>
-    </ul>
-  </li>
-  --}}
 </ul>
 
 @endsection
 
-
 @section('content')
-<!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Beranda
+      {{ $showroomName }}
       <small>Control panel</small>
     </h1>
     <ol class="breadcrumb">
@@ -70,25 +58,23 @@
     </ol>
   </section>
 
+  @if($showroomName != "Belum Ada Izin")
   <!-- Main content -->
   <section class="content">
     <div class="box box-warning">
           <div class="box-header with-border">
-            <h3 class="box-title">Ubah Outlet</h3>
+            <h3 class="box-title">Ubah Pegawai</h3>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
 
-              {!! Form::model($manager, ['method' => 'patch', 'action' => ['OwnerController@updateManager', $manager->id]]) !!}
+              {!! Form::model($employee, ['method' => 'patch', 'action' => ['ManagerController@updateEmployee', $employee->id]]) !!}
 
-              <!-- text input -->
               <div class="form-group {{ $errors->has('password') ? 'has-error' : ''  }}">
                 <label>Password</label>
-                <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
                 {!! Form::password('password', ['class' => 'form-control']) !!}
 
                 <label>Password Confirmation</label>
-                <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
                 {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
 
                 @if($errors->has('password'))
@@ -97,8 +83,10 @@
                 {{ $errors->first('password') }}
                 </label>
                 @endif
+
               </div>
 
+              <!-- text input -->
               <div class="form-group {{ $errors->has('name') ? 'has-error' : ''  }}">
                 <label>Nama</label>
                 <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
@@ -110,12 +98,13 @@
                 {{ $errors->first('name') }}
                 </label>
                 @endif
+
               </div>
 
               <div class="form-group {{ $errors->has('address') ? 'has-error' : ''  }}">
                 <label>Alamat</label>
-                <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
                 {!! Form::text('address', null, ['class' => 'form-control']) !!}
+                <!-- <input class="form-control" placeholder="JL. Klampis" name="address" type="text"> -->
 
                 @if($errors->has('address'))
                 <label class="control-label">
@@ -123,12 +112,13 @@
                 {{ $errors->first('address') }}
                 </label>
                 @endif
+
               </div>
 
               <div class="form-group {{ $errors->has('city') ? 'has-error' : ''  }}">
                 <label>Kota</label>
-                <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
                 {!! Form::text('city', null, ['class' => 'form-control']) !!}
+                <!-- <input class="form-control" placeholder="Surabaya" name="city" type="text"> -->
 
                 @if($errors->has('city'))
                 <label class="control-label">
@@ -140,7 +130,7 @@
 
               <div class="form-group {{ $errors->has('phone') ? 'has-error' : ''  }}">
                 <label>Telepon</label>
-                <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
+                <!-- <input class="form-control" placeholder="03153264" name="phone" type="text"> -->
                 {!! Form::text('phone', null, ['class' => 'form-control']) !!}
 
                 @if($errors->has('phone'))
@@ -153,8 +143,8 @@
 
               <div class="form-group {{ $errors->has('balance') ? 'has-error' : ''  }}">
                 <label>Gaji</label>
-                <!-- <input class="form-control" placeholder="Sato 1 Klampis Jaya" name="name" type="text" value=> -->
                 {!! Form::text('balance', null, ['class' => 'form-control']) !!}
+                <!-- <input class="form-control" placeholder="5000000" name="balance" type="text"> -->
 
                 @if($errors->has('balance'))
                 <label class="control-label">
@@ -165,38 +155,42 @@
               </div>
 
               <!-- select -->
-              @if($showroomKosong > 0)
-              <div class="form-group {{ $errors->has('showroom') ? 'has-error' : ''  }}">
-                <label>Pilih Showroom</label>
-                <select class="form-control" name="showroom">
-                  <option>Pilih Showroom</option>
-                  @foreach($showrooms as $showroom)
-                    @if(!isset($showroom->manager->name))
-                      <option value="{{ $showroom->id }}">{{ $showroom->name }}</option>
-                    @endif
-                  @endforeach
+              <div class="form-group {{ $errors->has('role') ? 'has-error' : ''  }}">
+                <label>Jabatan</label>
+                <select class="form-control" name="role">
+                  <option>Pilih Jabatan</option>
+                  <option value="3">Akunting</option>
+                  <option value="4">Operator Toko</option>
                 </select>
 
-                @if($errors->has('showroom'))
+                @if($errors->has('role'))
                 <label class="control-label">
                 <i class="fa fa-times-circle-o"></i>
-                {{ $errors->first('showroom') }}
+                {{ $errors->first('role') }}
                 </label>
                 @endif
               </div>
-              @endif
 
               <div class="box-footer">
                 <button type="submit" class="btn btn-primary">Perbarui</button>
+                <!-- <button type="submit" class="btn btn-success">Perbarui</button> -->
               </div>
 
+            <!-- </form> -->
             {!! Form::close() !!}
 
           </div>
           <!-- /.box-body -->
         </div>
   </section>
+
   <!-- /.content -->
+  @else
+  <section class="content">
+    Silahkan Hubungi Owner
+  </section>
+  @endif
+
 </div>
-<!-- /.content-wrapper -->
+
 @endsection

@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Owner')
+@section('title', 'Manager')
 
 @section('name', Auth::user()->name)
 
-@section('role', 'Owner')
+@section('role', 'Manager')
 
 @section('sidebar-menu')
 <ul class="sidebar-menu">
@@ -15,54 +15,30 @@
     </a>
   </li>
 
+  @if($showroomName != "Belum Ada Izin")
   <li class="treeview">
     <a href="#">
-      <i class="fa fa-home"></i> <span>Outlet</span> <i class="fa fa-angle-left pull-right"></i>
+      <i class="fa fa-home"></i> <span>Pegawai</span> <i class="fa fa-angle-left pull-right"></i>
     </a>
 
     <ul class="treeview-menu">
-      <li><a href="{{ url('owner/showrooms') }}"><i class="fa fa-circle-o"></i> Semua Outlet</a></li>
-      <li><a href="{{ url('owner/showrooms/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
+      <li><a href="{{ url('pricings') }}"><i class="fa fa-circle-o"></i> Semua Pegawai</a></li>
+      <li><a href="{{ url('pricings/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
     </ul>
 
   </li>
 
   <li class="treeview">
     <a href="#">
-      <i class="fa fa-edit"></i> <span>Manajer</span>
+      <i class="fa fa-edit"></i> <span>Tarif</span>
       <i class="fa fa-angle-left pull-right"></i>
     </a>
     <ul class="treeview-menu">
-      <li><a href="{{ url('owner/managers') }}"><i class="fa fa-circle-o"></i> Semua Manajer</a></li>
-      <li><a href="{{ url('owner/managers/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
+      <li><a href="{{ url('pricings') }}"><i class="fa fa-circle-o"></i> Semua Tarif</a></li>
+      <li><a href="{{ url('pricings/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
     </ul>
   </li>
-
-  {{--
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-table"></i> <span>Laporan</span>
-      <i class="fa fa-angle-left pull-right"></i>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="{{ url('owner/reports') }}"><i class="fa fa-circle-o"></i> Semua Laporan</a></li>
-      <li><a href="{{ url('owner/reports/showroom') }}"><i class="fa fa-circle-o"></i> Pilih Outlet</a></li>
-    </ul>
-  </li>
-  --}}
-
-  {{--
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-envelope"></i> <span>Pesan</span>
-      <small class="label pull-right bg-yellow">12</small>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="{{ url('owner/messages') }}"><i class="fa fa-circle-o"></i> Semua Pesan</a></li>
-      <li><a href="{{ url('owner/messages/create') }}"><i class="fa fa-circle-o"></i> Tulis Pesan</a></li>
-    </ul>
-  </li>
-  --}}
+  @endif
 
 </ul>
 
@@ -73,7 +49,7 @@
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1>
-      Beranda
+      {{ $showroomName }}
       <small>Control panel</small>
     </h1>
     <ol class="breadcrumb">
@@ -82,13 +58,14 @@
     </ol>
   </section>
 
+  @if($showroomName != "Belum Ada Izin")
   <!-- Main content -->
   <section class="content">
     <div class="row">
           <div class="col-xs-12">
             <div class="box">
               <div class="box-header">
-                <h3 class="box-title">Semua Manager</h3>
+                <h3 class="box-title">Semua Outlet</h3>
 
                 <div class="box-tools">
                   {{--
@@ -109,24 +86,16 @@
                 <table class="table table-hover">
                   <tbody><tr>
                     <th>Nama</th>
-                    <th>Alamat</th>
-                    <th>Kota</th>
-                    <th>Telepon</th>
-                    <th>Gaji</th>
-                    <th>Tanggal Registrasi</th>
+                    <th>Harga</th>
                     <th>Pilihan</th>
                   </tr>
-                  @foreach($managers as $manager)
+                  @foreach($pricings as $pricing)
                   <tr>
-                    <td>{{ $manager->name }}</td>
-                    <td>{{ $manager->address }}</td>
-                    <td>{{ $manager->city }}</td>
-                    <td>{{ $manager->phone }}</td>
-                    <td>{{ $manager->balance }}</td>
-                    <td>{{ $manager->created_at }}</td>
+                    <td>{{ $pricing->name }}</td>
+                    <td>{{ $pricing->value }}</td>
                     <td>
-                      <a href="{{ route('owner.managers.destroy', $manager->id) }}" role="button" class="btn btn-danger">Delete</a>
-                      {{--<a href="{{ route('owner.managers.edit', $manager->id) }}" role="button" class="btn btn-warning">Edit</a>--}}
+                      <a href="{{ route('manager.pricings.destroy', $pricing->id) }}" role="button" class="btn btn-danger">Delete</a>
+                      <a href="{{ route('manager.pricings.edit', $pricing->id) }}" role="button" class="btn btn-warning">Edit</a>
                     </td>
                   </tr>
                   @endforeach
@@ -150,7 +119,14 @@
           </div>
         </div>
   </section>
+
   <!-- /.content -->
+  @else
+  <section class="content">
+    Silahkan Hubungi Owner
+  </section>
+  @endif
+
 </div>
 
 @endsection

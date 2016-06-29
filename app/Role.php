@@ -8,7 +8,7 @@ class Role extends Model
 {
     protected $table = 'roles';
 
-    public function user (){
+    public function user(){
       return $this->hasMany(User::class);
     }
 }

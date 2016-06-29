@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Showroom;
 use App\User;
-// use Illuminate\Support\Facades\Validator;
 use Validator;
 
 class OwnerController extends Controller
@@ -19,7 +18,7 @@ class OwnerController extends Controller
      */
     public function indexShowroom()
     {
-        $showrooms = Showroom::all();
+        $showrooms = Showroom::with('users')->get();
         return view('backend.owner.showrooms.list')->withShowrooms($showrooms);
     }
 
@@ -33,8 +32,17 @@ class OwnerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function createManager()
     {
+        $showroomKosong = 0;
+        $showrooms = Showroom::all();
+        foreach($showrooms as $showroom){
+          if(!isset($showroom->manager->name)){
+            $showroomKosong++;
+          }
+        }
+
+        return view('backend.owner.managers.create', compact('showrooms', 'showroomKosong'));
         //
     }
 
@@ -65,27 +73,36 @@ class OwnerController extends Controller
     {
 
         $this->validate($request, [
-          'email' => 'required|email',
+          'email' => 'required|email|unique:users',
           'password' => 'required|confirmed|min:5|max:20',
           'name' => 'required|max:30',
           'address' => 'required|max:100',
           'city'  => 'required|max:20',
           'phone' => 'required|numeric',
           'balance' => 'required|digits_between:5,10',
+          // 'showroom' => 'required|numeric',
         ]);
 
-        $data = [
-          'email' => $request->email,
-          'password' => bcrypt($request->password),
-          'name' => $request->name,
-          'address' => $request->address,
-          'city'  => $request->city,
-          'phone'  => $request->phone,
-          'balance' => $request->balance,
-          'role_id' => 2,
-        ];
-        // dd($data);
-        User::create($data);
+        $manager = new User;
+        $manager->email = $request->email;
+        $manager->password = bcrypt($request->password);
+        $manager->name = $request->name;
+        $manager->address = $request->address;
+        $manager->city = $request->city;
+        $manager->phone = $request->phone;
+        $manager->balance = $request->balance;
+        $manager->role_id = 2;
+
+        /*
+        if(isset($request->showroom)){
+        $manager->showroom_id = $request->showroom;
+        }else{
+        $manager->showroom_id = "";
+        }
+        */
+
+        $manager->save();
+
         return redirect()->route('owner.managers.index');
 
     }
@@ -109,17 +126,24 @@ class OwnerController extends Controller
      */
     public function editShowroom($id)
     {
-        // return $id;
         $showroom = Showroom::findOrFail($id);
-        // return $showroom;
-        return view('backend.owner.showrooms.edit', compact('showroom'));
-        // dd($showroom);
+        $managers = User::where('role_id', '=', 2)
+          ->whereNull('showroom_id')
+          ->get();
+        return view('backend.owner.showrooms.edit', compact('showroom', 'managers'));
     }
 
     public function editManager($id)
     {
+        $showroomKosong = 0;
         $manager = User::findOrFail($id);
-        return view('backend.owner.managers.edit', compact('manager'));
+        $showrooms = Showroom::all();
+        foreach($showrooms as $showroom){
+          if(!isset($showroom->manager->name)){
+            $showroomKosong++;
+          }
+        }
+        return view('backend.owner.managers.edit', compact('manager', 'showrooms', 'showroomKosong'));
     }
 
     /**
@@ -131,9 +155,34 @@ class OwnerController extends Controller
      */
     public function updateShowroom(Request $request, $id)
     {
+      // dd($request->manager);
+
+      $this->validate($request, [
+        'name' => 'required|max:30',
+        'address' => 'required|max:100',
+        'city'  => 'required|max:20',
+        'phone' => 'required|numeric',
+        'balance' => 'required|digits_between:5,10',
+        // 'manager' => 'required|numeric',
+      ]);
+
         $showroom = Showroom::find($id);
-        $showroom->update($request->all());
+
+        if(is_numeric($request->manager)){
+        $manager = User::find($request->manager);
+        $manager->showroom()->associate($showroom);
+        $manager->save();
+        }
+
+        $showroom->name = $request->name;
+        $showroom->address = $request->address;
+        $showroom->city = $request->city;
+        $showroom->phone = $request->phone;
+        $showroom->balance = $request->balance;
+        $showroom->save();
+
         return redirect()->route('owner.showrooms');
+
     }
 
     public function updateManager(Request $request, $id)
@@ -151,8 +200,15 @@ class OwnerController extends Controller
      */
     public function destroyShowroom($id)
     {
+        $manager = User::where('role_id', '=', 2)
+          ->where('showroom_id', '=', $id)
+          ->first();
+        $manager->showroom()->dissociate();
+        $manager->save();
+
         $showroom = Showroom::find($id);
         $showroom->delete();
+        //remove showroom from user
         return redirect('owner/showrooms');
     }
 

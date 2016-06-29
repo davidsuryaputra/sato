@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -24,6 +25,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $loggedInRole = Auth::user()->role->name;
+        if(isset(Auth::user()->showroom->name)){
+          $showroomName = Auth::user()->showroom->name;
+        }else{
+          $showroomName = "Belum Ada Izin";
+        }
+        $username = Auth::user()->name;
+        return view('backend.'.$loggedInRole.'.home', compact('showroomName', 'username', 'loggedInRole'));
     }
 }
