@@ -28,7 +28,7 @@ class ManagerController extends Controller
         }else{
           $showroomName = "Belum Ada Izin";
         }
-        return view('backend.manager.employees.index', compact('employees', 'showroomName'));
+        return view('manager.employees.index', compact('employees', 'showroomName'));
     }
 
     /**
@@ -44,7 +44,7 @@ class ManagerController extends Controller
           $showroomName = "Belum Ada Izin";
         }
 
-        return view('backend.manager.employees.create', compact('showroomName'));
+        return view('manager.employees.create', compact('showroomName'));
     }
 
     /**
@@ -96,7 +96,7 @@ class ManagerController extends Controller
         }else{
           $showroomName = "Belum Ada Izin";
         }
-        return view('backend.manager.employees.edit', compact('employee','showroomName'));
+        return view('manager.employees.edit', compact('employee','showroomName'));
     }
 
     /**
@@ -162,13 +162,13 @@ class ManagerController extends Controller
           $showroomName = "Belum Ada Izin";
         }
 
-        return view('backend.manager.pricings.index', compact('pricings', 'showroomName'));
+        return view('manager.pricings.index', compact('pricings', 'showroomName'));
     }
 
     public function createPricing()
     {
         $showroomName = Auth::user()->showroom->name;
-        return view('backend.manager.pricings.create', compact('showroomName'));
+        return view('manager.pricings.create', compact('showroomName'));
     }
 
     public function storePricing(Request $request)
@@ -191,10 +191,10 @@ class ManagerController extends Controller
     {
         $showroomName = Auth::user()->showroom->name;
         $pricing = Pricing::findOrFail($id);
-        return view('backend.manager.pricings.edit', compact('pricing', 'showroomName'));
+        return view('manager.pricings.edit', compact('pricing', 'showroomName'));
     }
 
-    public function updatePricing(Request $request, $id)
+    public function Pricing(Request $request, $id)
     {
         $this->validate($request, [
           'name' => 'required|max:30',

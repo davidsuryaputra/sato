@@ -32,6 +32,6 @@ class HomeController extends Controller
           $showroomName = "Belum Ada Izin";
         }
         $username = Auth::user()->name;
-        return view('backend.'.$loggedInRole.'.home', compact('showroomName', 'username', 'loggedInRole'));
+        return view(''.$loggedInRole.'.home', compact('showroomName', 'username', 'loggedInRole'));
     }
 }

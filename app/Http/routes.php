@@ -126,6 +126,37 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
 
 });
 
+//operator
+Route::group(['prefix' => 'operator', 'middleware' => ['auth', 'role:operator']], function () {
+
+  //stock
+    //income
+    //outcome
+  //asset
+    //income
+    //outcome
+
+  //item
+    //transaksi
+      //pilih category
+      //pilih inc/out
+
+  Route::get('materials', 'OperatorController@materialsIndex')->name('operator.materials.index');
+  Route::get('materials/create', 'OperatorController@materialsCreate')->name('operator.materials.create');
+  Route::post('materials/store', 'OperatorController@materialsStore')->name('operator.materials.store');
+  Route::get('materials/{id}/edit', 'OperatorController@materialsEdit')->name('operator.materials.edit');
+  Route::patch('materials/{id}/update', 'OperatorController@materialsUpdate')->name('operator.materials.update');
+  Route::get('materials/{id}/destroy', 'OperatorController@materialsDestroy')->name('operator.materials.destroy');
+
+  Route::get('assets', 'OperatorController@assetsIndex')->name('operator.assets.index');
+  Route::get('assets/create', 'OperatorController@assetsCreate')->name('operator.assets.create');
+  Route::post('assets/store', 'OperatorController@assetsStore')->name('operator.assets.store');
+  Route::get('assets/{id}/edit', 'OperatorController@assetsEdit')->name('operator.assets.edit');
+  Route::patch('assets/{id}/update', 'OperatorController@assetsUpdate')->name('operator.assets.update');
+  Route::get('assets/{id}/destroy', 'OperatorController@assetsDestroy')->name('operator.assets.destroy');
+
+});
+
 /*
 //accountant
 Route::group(['prefix' => 'accountant', 'middleware' => 'auth'], function () {
@@ -184,75 +215,7 @@ Route::group(['prefix' => 'accountant', 'middleware' => 'auth'], function () {
 
 });
 
-//operator
-Route::group(['prefix' => 'operator', 'middleware' => 'auth'], function () {
 
-  //stock
-    //income
-    //outcome
-  //asset
-    //income
-    //outcome
-  //message
-    //tulis
-
-  Route::get('stocks', function () {
-    return 'list stock';
-  });
-
-  Route::get('stocks/income', function () {
-    return 'create stock income';
-  });
-
-  Route::get('stocks/outcome', function () {
-    return 'create stock outcome';
-  });
-
-  Route::get('stocks/1', function () {
-    return 'display stock';
-  });
-
-  Route::get('stocks/1/edit', function () {
-    return 'edit stock';
-  });
-
-  Route::get('assets', function () {
-    return 'list asset';
-  });
-
-  Route::get('assets/income', function () {
-    return 'create incoming asset form';
-  });
-
-  Route::get('assets/outcome', function () {
-    return 'create outcome asset form';
-  });
-
-  Route::get('assets/1', function () {
-    return 'display asset 1';
-  });
-
-  Route::get('assets/1/edit', function () {
-    return 'edit asset 1';
-  });
-
-  Route::get('messages', function () {
-    return 'list all message';
-  });
-
-  Route::get('messages/create', function () {
-    return 'create messages';
-  });
-
-  Route::get('messages/1', function () {
-    return 'display messages';
-  });
-
-  Route::get('messages/1/edit', function () {
-    return 'edit messages';
-  });
-
-});
 
 //client
 Route::group(['prefix' => 'client', 'middleware' => 'auth'], function () {

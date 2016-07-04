@@ -19,13 +19,13 @@ class OwnerController extends Controller
     public function indexShowroom()
     {
         $showrooms = Showroom::with('users')->get();
-        return view('backend.owner.showrooms.list')->withShowrooms($showrooms);
+        return view('owner.showrooms.list')->withShowrooms($showrooms);
     }
 
     public function indexManager()
     {
         $managers = User::where('role_id', '=', '2')->get();
-        return view('backend.owner.managers.list')->withManagers($managers);
+        return view('owner.managers.list')->withManagers($managers);
     }
     /**
      * Show the form for creating a new resource.
@@ -42,7 +42,7 @@ class OwnerController extends Controller
           }
         }
 
-        return view('backend.owner.managers.create', compact('showrooms', 'showroomKosong'));
+        return view('owner.managers.create', compact('showrooms', 'showroomKosong'));
         //
     }
 
@@ -130,7 +130,7 @@ class OwnerController extends Controller
         $managers = User::where('role_id', '=', 2)
           ->whereNull('showroom_id')
           ->get();
-        return view('backend.owner.showrooms.edit', compact('showroom', 'managers'));
+        return view('owner.showrooms.edit', compact('showroom', 'managers'));
     }
 
     public function editManager($id)
@@ -143,7 +143,7 @@ class OwnerController extends Controller
             $showroomKosong++;
           }
         }
-        return view('backend.owner.managers.edit', compact('manager', 'showrooms', 'showroomKosong'));
+        return view('owner.managers.edit', compact('manager', 'showrooms', 'showroomKosong'));
     }
 
     /**

@@ -6,14 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'CreateBonusesTable' => $baseDir . '/database/migrations/unused/2016_06_13_214341_create_bonuses_table.php',
-    'CreateItemCategoriesTable' => $baseDir . '/database/migrations/unused/2016_06_11_184654_create_item_categories_table.php',
-    'CreateItemsTable' => $baseDir . '/database/migrations/unused/2016_06_11_184636_create_items_table.php',
+    'CreateItemCategoriesTable' => $baseDir . '/database/migrations/2016_06_11_184654_create_item_categories_table.php',
+    'CreateItemsTable' => $baseDir . '/database/migrations/2016_06_11_184636_create_items_table.php',
     'CreatePasswordResetsTable' => $baseDir . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
-    'CreatePricingCategoriesTable' => $baseDir . '/database/migrations/unused/2016_06_11_185213_create_pricing_categories_table.php',
     'CreatePricingsTable' => $baseDir . '/database/migrations/2016_06_11_185150_create_pricings_table.php',
     'CreateRolesTable' => $baseDir . '/database/migrations/2016_06_10_145637_create_roles_table.php',
-    'CreateSalariesTable' => $baseDir . '/database/migrations/unused/2016_06_11_185236_create_salaries_table.php',
     'CreateShowroomsTable' => $baseDir . '/database/migrations/2016_06_11_184817_create_showrooms_table.php',
     'CreateTransactionCategoriesTable' => $baseDir . '/database/migrations/unused/2016_06_11_184900_create_transaction_categories_table.php',
     'CreateTransactionDetailsTable' => $baseDir . '/database/migrations/unused/2016_06_11_203637_create_transaction_details_table.php',
@@ -94,6 +91,8 @@ return array(
     'Hamcrest\\Util' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
     'Hamcrest\\Xml\\HasXPath' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
     'IlluminateQueueClosure' => $vendorDir . '/laravel/framework/src/Illuminate/Queue/IlluminateQueueClosure.php',
+    'ItemsItemCategoryIdFk' => $baseDir . '/database/migrations/2016_07_03_041142_items_item_category_id_fk.php',
+    'ItemsShowroomIdFk' => $baseDir . '/database/migrations/2016_07_03_041123_items_showroom_id_fk.php',
     'PHPUnit_Exception' => $vendorDir . '/phpunit/phpunit/src/Exception.php',
     'PHPUnit_Extensions_GroupTestSuite' => $vendorDir . '/phpunit/phpunit/src/Extensions/GroupTestSuite.php',
     'PHPUnit_Extensions_PhptTestCase' => $vendorDir . '/phpunit/phpunit/src/Extensions/PhptTestCase.php',
@@ -530,6 +529,7 @@ return array(
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
     'UsersRoleIdFk' => $baseDir . '/database/migrations/2016_06_16_085806_users_role_id_fk.php',
     'UsersShowroomIdFk' => $baseDir . '/database/migrations/2016_06_18_043537_users_showroom_id_fk.php',
+    'item_categories_table_seeder' => $baseDir . '/database/seeds/item_categories_table_seeder.php',
     'roles_table_seeder' => $baseDir . '/database/seeds/roles_table_seeder.php',
     'users_table_seeder' => $baseDir . '/database/seeds/users_table_seeder.php',
 );
