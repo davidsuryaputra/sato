@@ -62,7 +62,7 @@ Route::group(['prefix' => 'owner', 'middleware' => ['auth', 'role:owner']], func
   Route::get('showrooms', 'OwnerController@indexShowroom')->name('owner.showrooms');
 
   Route::get('showrooms/create', function () {
-    return view('backend.owner.showrooms.create');
+    return view('owner.showrooms.create');
   });
 
   Route::post('showrooms/create', 'OwnerController@storeShowroom')->name('owner.showrooms.create');
