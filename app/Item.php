@@ -19,4 +19,10 @@ class Item extends Model
     public function item_category(){
       return $this->belongsTo(ItemCategory::Class);
     }
+
+    public function transactionDetail()
+    {
+      return $this->belongsTo(TransactionDetail::class);
+    }
+
 }

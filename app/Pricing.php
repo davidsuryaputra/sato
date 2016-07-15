@@ -17,4 +17,10 @@ class Pricing extends Model
     {
       return $this->belongsTo(Showroom::class);
     }
+
+    public function transactionDetail()
+    {
+      return $this->belongsTo(TransactionDetail::class);
+    }
+
 }

@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="{{ url('bootstrap/css/font-awesome.min.css') }}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="{{ url('bootstrap/css/ionicons.min.css') }}">
+  
+  <link rel="stylesheet" href="{{ url('bootstrap/css/jquery-ui.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css') }}">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -36,6 +38,10 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+  <style>
+  @yield('autocomplete-accountant-style')
+  </style>
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -148,7 +154,10 @@
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);
+  @yield('autocomplete-accountant')
 </script>
+
+
 <!-- Bootstrap 3.3.6 -->
 <script src="{{ url('bootstrap/js/bootstrap.min.js') }}"></script>
 <!-- Morris.js charts -->

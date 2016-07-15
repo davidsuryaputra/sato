@@ -157,66 +157,27 @@ Route::group(['prefix' => 'operator', 'middleware' => ['auth', 'role:operator']]
 
 });
 
-/*
+
 //accountant
-Route::group(['prefix' => 'accountant', 'middleware' => 'auth'], function () {
+Route::group(['middleware' => ['auth','role:accountant']], function () {
 
-  Route::get('/', function (){
-    return 'all income outcome report';
-  });
+  //list transaction in out
+  Route::get('transactions', 'AccountantController@index')->name('accountant.index');
 
-  Route::get('income', function () {
-    return 'all income';
-  });
+  //view detail transaction
+  // Route::get('transactions/{id}', 'AccountantController@show')->name('accountant.show');
 
-  Route::get('income/create', function () {
-    return 'create income form';
-  });
-
-  Route::get('income/1', function () {
-    return 'income invoice';
-  });
-
-  Route::get('income/1/edit', function () {
-    return 'edit income form only if needed always alert on create and edit';
-  });
-
-  Route::get('outcome', function () {
-    return 'all outcome';
-  });
-
-  Route::get('outcome/create', function () {
-    return 'create outcome form';
-  });
-
-  Route::get('outcome/1', function () {
-    return 'outcome invoice';
-  });
-
-  Route::get('outcome/1/edit', function () {
-    return 'edit outcome form only if needed always alert on create and edit';
-  });
-
-  Route::get('messages', function () {
-    return 'list all message';
-  });
-
-  Route::get('messages/create', function () {
-    return 'create messages';
-  });
-
-  Route::get('messages/1', function () {
-    return 'display messages';
-  });
-
-  Route::get('messages/1/edit', function () {
-    return 'edit messages';
-  });
+  //create transaction form
+  Route::get('transactions/create', 'AccountantController@create')->name('accountant.create');
+  // Route::get('transactions/create', function (){
+  //   return 'hi';
+  // });
+  Route::post('transactions/store', 'AccountantController@store')->name('accountant.store');
 
 });
 
 
-
+/*
 //client
 Route::group(['prefix' => 'client', 'middleware' => 'auth'], function () {
 
