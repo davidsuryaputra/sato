@@ -5,242 +5,395 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Transaction;
+use App\TransactionDetail;
 use App\Item;
 use App\ItemCategory;
+use App\User;
 use Validator;
-use Auth;
+use Auth, Response, Session;
 
 class OperatorController extends Controller
 {
-    public function materialsIndex()
+
+    //pindahan dari accountant
+    public function index()
     {
       if(isset(Auth::user()->showroom->name)){
         $showroomName = Auth::user()->showroom->name;
       }else{
         $showroomName = "Belum Ada Izin";
       }
-      $itemCategory = ItemCategory::where('name', 'material')->first();
-      $materials = $itemCategory->materials;
-      return view('operator.materials.index', compact('materials', 'showroomName'));
+
+        $transactions = Transaction::where('showroom_id', Auth::user()->showroom_id)->get();
+
+        /*
+        foreach($transactions as $transaction)
+        {
+          echo $transaction->customer->name."\n";
+        }
+        */
+        // return $transactions;
+        return view('operator.transaction.index', compact('transactions', 'showroomName'));
     }
 
-    public function materialsCreate()
+    public function show($id)
     {
-      if(isset(Auth::user()->showroom->name)){
-        $showroomName = Auth::user()->showroom->name;
-      }else{
-        $showroomName = "Belum Ada Izin";
-      }
-      return view('operator.materials.create', compact('showroomName'));
-    }
-
-    public function materialsStore(Request $request)
-    {
-      $this->validate($request, [
-        'name' => 'required|alpha',
-        'quantity' => 'required|numeric|min:1',
-        'value' =>  'required|digits_between:4,9',
-        'transaction' => 'required|numeric',
-      ]);
-
-      $lastStock = Item::where('name', $request->name)
-        ->where('item_category_id', 1)
-        ->first(['stocks']);
-
-        if(!isset($lastStock)){
-          $lastStock = 0;
+        if(isset(Auth::user()->showroom->name)){
+          $showroomName = Auth::user()->showroom->name;
         }else{
-          $lastStock = $lastStock->stocks;
+          $showroomName = "Belum Ada Izin";
         }
 
-      $material = Item::firstOrNew([
-        'name' => $request->name,
-        'item_category_id' => 1,
-      ]);
-      $material->showroom_id = Auth::user()->showroom_id;
-      $material->item_category_id = 1;
-      $material->name = $request->name;
-      $material->value  = $request->value;
-      $material->transaction_category = $request->transaction;
-      if($request->transaction == 1){
-        $material->stocks = $lastStock + $request->quantity;
-      }else{
-        $material->stocks = $lastStock - $request->quantity;
+        $transaction = Transaction::find($id);
+
+        $transactionDetails = TransactionDetail::where('transaction_id', $id)->get();
+
+        // foreach($transaction->details as $item)
+        // {
+        //   echo $item->sub_total."\n";
+        // }
+
+        // return $transaction->details;
+        // return $transactionDetails;
+        return view('operator.transaction.show', compact('transaction', 'transactionDetails', 'showroomName'));
+    }
+
+    public function create()
+    {
+
+        if(isset(Auth::user()->showroom->name)){
+          $showroomName = Auth::user()->showroom->name;
+        }else{
+          $showroomName = "Belum Ada Izin";
+        }
+
+        return view('operator.transaction.create', compact('showroomName'));
+    }
+
+    public function store(Request $request)
+    {
+
+      if(Session::has('customer_id'))
+      {
+        $customer_id = Session::get('customer_id');
       }
-      $material->save();
 
-      return redirect()->route('operator.materials.index');
+      if(Session::has('customer_name'))
+      {
+        $customer_name = Session::get('customer_name');
+      }
 
-    }
+      $showroom_id = Auth::user()->showroom_id;
+      $operator_id = Auth::user()->id;
 
-    public function materialsEdit($id)
-    {
-      $material = Item::findOrFail($id);
-      return view('operator.materials.edit', compact('material'));
+      $total = 0;
+      $transactionDetailsData = [];
+      foreach(Session::get('items') as $item){
+        $total = $total + $item['amount'];
+        // $transacionDetailData = []
+        $transactionDetailsData[] = [
+          'item_id' => $item['id'],
+          'quantity' => $item['qty'],
+          'sub_total' => $item['amount'],
+        ];
+      }
 
 
-    }
+      $transactionData = [
+        'showroom_id' => $showroom_id,
+        'customer_id' => $customer_id,
+        'operator_id' => $operator_id,
+        'total' => $total,
+      ];
 
-    public function materialsUpdate(Request $request, $id)
-    {
-      $this->validate($request, [
-        'name' => 'required|alpha|unique:items',
-        'quantity' => 'required|numeric|min:1',
-        'value' =>  'required|numeric',
-        'stock' => 'required|numeric',
-        'transaction_category' => 'required|numeric',
+      // $insertTransaction = new Transaction;
+      // $insertTransaction->save($transactionData);
+
+      //cara 1
+
+      $insertTransaction = Transaction::create($transactionData);
+
+      foreach($transactionDetailsData as $item)
+      {
+        $insertTransaction->details()->save(new TransactionDetail($item));
+      }
+
+      Session::forget('items');
+      Session::forget('customer_id');
+      Session::forget('customer_name');
+
+      return Response::json([
+        'success' => true,
       ]);
 
-      //find
-      //get last stock item
-      //last stock item + qty
+      //cara 2
+      /*
+      $insertTransaction = new Transaction;
+      $insertTransaction->showroom_id = 1;
+      $insertTransaction->customer_id = 5;
+      $insertTransaction->operator_id = 3;
+      $insertTransaction->total = 104000;
+      $insertTransaction->save();
 
-      $lastStock = Item::where('name', $request->name)
-        ->where('item_category_id', 1)
-        ->first(['stocks']);
+      $insertTransaction->details()->saveMany(array_map(function ($item) {
+        return new TransactionDetail($item);
+      }, $transactionDetailsData));
+      */
 
-      $material = Item::find($id);
-      $material->showroom_id = Auth::user()->showroom_id;
-      $material->item_category_id = 1;
-      $material->name = $request->name;
-      // $material->quantity = $request->quantity;
-      $material->value  = $request->value;
-      if($request->transaction_category == 1){
-        $material->stocks = $lastStock + $request->quantity;
-      }else{
-        $material->stocks = $lastStock - $request->quantity;
+    }
+
+    public function autocompleteItem(Request $request)
+    {
+      $results = array();
+      $term = $request->term;
+      $items = Item::whereIn('item_category_id', [1, 3])
+                ->where('name', 'LIKE', "%$term%")
+                ->orWhere('id', 'LIKE', "%$term%")
+                ->get();
+
+
+      foreach($items as $item)
+      {
+        $results[] = [
+          'id' => $item->id,
+          'price' => $item->value,
+          'value' => $item->name,
+        ];
       }
-      $material->transaction_category = $request->transaction_category;
-      $material->save();
 
-      return redirect()->route('operator.materials.index');
+      return Response::json($results);
+    }
+
+    public function autocompleteCustomer(Request $request)
+    {
+      $results = [];
+      $term = $request->term;
+      $customers = User::where('role_id', 5)
+                      ->where('name', 'LIKE', "%$term%")
+                      ->get();
+
+      foreach($customers as $customer)
+      {
+        $results[] = [
+          'id' => $customer->id,
+          'value' => $customer->name,
+        ];
+      }
+
+      return response()->json($results);
+    }
+
+    public function additem(Request $request)
+    {
+      $rules = [
+        'id'     => 'required',
+        'name'   => 'required',
+        'qty'    => 'required|numeric',
+        'price'  => 'required|numeric',
+        'amount' => 'required|numeric',
+      ];
+
+      $item = Item::find($request->id);
+
+      $data = [
+        'id'     => $item->id,
+        'name'   => $item->name,
+        'qty'    => $request->qty,
+        'price'  => $item->value,
+        'amount' => $request->qty * $item->value,
+      ];
+
+      $validator = Validator::make($data, $rules);
+      if($validator->fails())
+      {
+        return response()->json([
+          'success' => false,
+          'errors'  => $validator->errors()->toArray(),
+          'is_rules' => 0,
+          // 'data'  => $data,
+        ]);
+      }
+
+      if(!is_null(Session::get('items')))
+      {
+          $oldItems = Session::get('items');
+          $exists = false;
+          foreach($oldItems as $key => $value)
+          {
+            if($request->id == $value['id'])
+            {
+              $exists = true;
+            };
+          }
+
+          if($exists)
+          {
+            return response()->json([
+              'errors'  => 'Item '. $request->name . ' has already been taken',
+            ]);
+          }
+      }
+
+      //customer session
+      if(is_null(Session::get('customer_name')))
+      {
+        $customer_name = User::find($request->customer_id)->where('role_id', 5)->first();
+        Session::put('customer_name', $customer_name->name);
+      }
+
+      //penyakit
+      if(is_null(Session::get('customer_id')))
+      {
+        Session::put('customer_id', $request->customer_id);
+        $customer_id = "sesi customer id dibuat";
+        // exit;
+      }
+
+      Session::push('items', $data);
+
+      $grandTotal = 0;
+      $oldItems = Session::get('items');
+      foreach($oldItems as $key => $value)
+      {
+          $grandTotal = $grandTotal + $value['amount'];
+      }
+
+      Session::put('grandTotal', $grandTotal);
+
+      return response()->json([
+        'success' => true,
+        'data'    => $data,
+        'grandTotal'  => $grandTotal,
+      ]);
+    }
+
+    public function deleteitem($id)
+    {
+      $itemToRemove = $id;
+      $items = Session::get('items');
+      foreach($items as $key => $value)
+      {
+        if($value['id'] == $itemToRemove)
+        {
+          unset($items[$key]);
+        }
+      }
+      Session::put('items', $items);
+      return response()->json([
+        'success' => true,
+        'removedItem' => $itemToRemove,
+      ]);
 
     }
 
-    public function materialsDestroy($id)
+    public function clearitems()
     {
-      $material = Item::findOrFail($id);
-      $material->delete();
+      Session::forget('items');
+      Session::forget('customer_name');
+      Session::forget('customer_id');
 
-      return redirect()->route('operator.materials.index');
+      return response()->json([
+        'success'  => true,
+      ]);
     }
+    //end pindahan dari accountant
 
-
-    public function assetsIndex()
+    public function indexClient()
     {
+      $clients = User::where('role_id', 5)->where('showroom_id', Auth::user()->showroom_id)->get();
+
       if(isset(Auth::user()->showroom->name)){
         $showroomName = Auth::user()->showroom->name;
       }else{
         $showroomName = "Belum Ada Izin";
       }
-      $itemCategory = ItemCategory::where('name', 'asset')->first();
-      $assets = $itemCategory->assets;
-      return view('operator.assets.index', compact('assets', 'showroomName'));
+      return view('operator.client.index', compact('clients', 'showroomName'));
     }
 
-    public function assetsCreate()
+    public function createClient()
     {
-      if(isset(Auth::user()->showroom->name)){
+
+      if(isset(Auth::user()->showroom->name))
+      {
         $showroomName = Auth::user()->showroom->name;
       }else{
         $showroomName = "Belum Ada Izin";
       }
-      return view('operator.assets.create', compact('showroomName'));
+      return view('operator.client.create', compact('showroomName'));
     }
 
-    public function assetsStore(Request $request)
+    public function storeClient(Request $request)
     {
       $this->validate($request, [
-        'name' => 'required|alpha',
-        'quantity' => 'required|numeric|min:1',
-        'value' =>  'required|numeric|digits_between:4,9',
-        'transaction' => 'required|numeric',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|confirmed|min:5|max:20',
+        'name' => 'required|max:30',
+        'address' => 'required|max:100',
+        'city' => 'required|max:20',
+        'phone' => 'required|numeric',
+        'balance' => 'required|digits_between:1,10',
       ]);
 
-      //updateOrCreate
-      //ambil last stock item
-      //last stock item + qty
-      $lastStock = Item::where('name', $request->name)
-        ->where('item_category_id', 2)
-        ->first(['stocks']);
+      $client = new User;
+      $client->email = $request->email;
+      $client->password = bcrypt($request->password);
+      $client->name = $request->name;
+      $client->address = $request->address;
+      $client->city = $request->city;
+      $client->phone = $request->phone;
+      $client->balance = $request->balance;
+      $client->role_id = 5;
+      $client->showroom_id = Auth::user()->showroom_id;
+      $client->save();
 
-      // dd($lastStock);
-
-
-
-      if(!isset($lastStock)){
-        $lastStock = 0;
-      }else{
-        $lastStock = $lastStock->stocks;
-      }
-
-      $asset = Item::firstOrNew([
-        'name' => $request->name,
-        'item_category_id' => 2,
-      ]);
-      $asset->showroom_id = Auth::user()->showroom_id;
-      $asset->item_category_id = 2;
-      $asset->name = $request->name;
-      $asset->value  = $request->value;
-      if($request->transaction == 1){
-        $asset->stocks = $lastStock + $request->quantity;
-      }else{
-        $asset->stocks = $lastStock - $request->quantity;
-      }
-      $asset->transaction_category = $request->transaction;
-      $asset->save();
-
-      return redirect()->route('operator.assets.index');
-
-
+      return redirect()->route('operator.clients.index');
     }
 
-    public function assetsEdit($id)
+    public function editClient($id)
     {
-      $asset = Item::findOrFail($id);
-      return view('operator.assets.edit', compact('asset'));
-
+      $client = User::findOrFail($id);
+      if(isset(Auth::user()->showroom->name))
+      {
+        $showroomName = Auth::user()->showroom->name;
+      }else{
+        $showroomName = "Belum Ada Izin";
+      }
+      return view('operator.client.edit', compact('client', 'showroomName'));
     }
 
-    public function assetsUpdate(Request $request, $id)
+    public function updateClient(Request $request, $id)
     {
       $this->validate($request, [
-        'name' => 'required|alpha|unique:items',
-        'quantity' => 'required|numeric|min:1',
-        'value' =>  'required|numeric',
-        'stock' => 'required|numeric',
-        'transaction_category' => 'required|numeric',
+        'password' => 'required|confirmed|min:5|max:20',
+        'name'  => 'required|max:30',
+        'address' => 'required|max:100',
+        'city'  => 'required|max:20',
+        'phone' => 'required|numeric',
+        'balance' => 'required|digits_between:5,10',
       ]);
 
-      //find
-      //get last stock item
-      //last stock item + qty
-      $lastStock = Item::where('name', $request->name)
-        ->where('item_category_id', 1)
-        ->first(['stocks']);
+      $client = User::where('id', $id)->where('showroom_id', Auth::user()->showroom_id)
+      ->first();
 
-      $asset = Item::find($id);
-      $asset->showroom_id = Auth::user()->showroom_id;
-      $asset->item_category_id = 2;
-      $asset->name = $request->name;
-      // $asset->quantity = $request->quantity;
-      $asset->value  = $request->value;
-      if($request->transaction_category == 1){
-        $asset->stocks = $lastStock + $request->quantity;
-      }else{
-        $asset->stocks = $lastStock - $request->quantity;
-      }
-      $asset->transaction_category = $request->transaction_category;
-      $asset->save();
+      $client->password = bcrypt($request->password);
+      $client->name = $request->name;
+      $client->address = $request->address;
+      $client->city = $request->city;
+      $client->phone = $request->phone;
+      $client->balance = $request->balance;
+      $client->save();
 
-      return redirect()->route('operator.assets.index');
+      return redirect()->route('operator.clients.index');
     }
 
-    public function assetsDestroy($id)
+    public function destroyClient($id)
     {
-      $asset = Item::findOrFail($id);
-      $asset->delete();
+      $client = User::where('id', $id)
+        ->where('showroom_id', Auth::user()->showroom_id)
+        ->first();
 
-      return redirect()->route('operator.assets.index');
+      $client->delete();
+      return redirect()->route('operator.clients.index');
     }
 }

@@ -17,18 +17,25 @@
 
   @if($showroomName != "Belum Ada Izin")
   <li class="treeview">
-    <a href="{{ url('transactions') }}">
-      <i class="fa fa-home"></i> <span>Transaksi</span>
+    <a href="#">
+      <i class="fa fa-home"></i> <span>Transaksi</span> <i class="fa fa-angle-left pull-right"></i>
     </a>
 
-    <li class="treeview">
+    <ul class="treeview-menu">
+      <li>
+      <a href="{{ url('transactions') }}">
+        <i class="fa fa-home"></i> <span>Semua Transaksi</span>
+      </a>
+      </li>
+
+      <li>
       <a href="{{ url('transactions/create') }}">
         <i class="fa fa-circle-o"></i> <span>Buat Transaksi</span>
       </a>
-    </li>
+      </li>
+    </ul>
 
   </li>
-
   @endif
 
 </ul>

@@ -12,17 +12,17 @@ class Item extends Model
       'item_category_id',
       'name',
       'value',
-      'stocks',
-      'transaction_category',
+      'stock',
+      // 'transaction_category',
     ];
 
     public function item_category(){
       return $this->belongsTo(ItemCategory::Class);
     }
 
-    public function transactionDetail()
+    public function transactionDetails()
     {
-      return $this->belongsTo(TransactionDetail::class);
+      return $this->hasMany(TransactionDetail::class);
     }
 
 }

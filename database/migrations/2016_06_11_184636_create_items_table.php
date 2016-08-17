@@ -18,10 +18,8 @@ class CreateItemsTable extends Migration
             $table->integer('showroom_id')->unsigned();
             $table->integer('item_category_id')->unsigned();
             $table->string('name');
-            $table->integer('quantity');
-            $table->integer('stocks');
-            $table->string('transaction_category');
-            $table->integer('value')->nullable();
+            $table->integer('stock')->nullable();
+            $table->integer('value');
             $table->softDeletes();
             $table->timestamps();
         });

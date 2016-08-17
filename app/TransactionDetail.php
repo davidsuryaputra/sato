@@ -9,10 +9,7 @@ class TransactionDetail extends Model
     protected $table = 'transaction_details';
     protected $fillable = [
         'transaction_id',
-        'transaction_category_id',
         'item_id',
-        'pricing_id',
-        'periodic_id',
         'quantity',
         'description',
         'sub_total',
@@ -29,7 +26,7 @@ class TransactionDetail extends Model
 
     public function item()
     {
-      return $this->hasOne(Item::class);
+      return $this->belongsTo(Item::class);
     }
 
     public function pricing()

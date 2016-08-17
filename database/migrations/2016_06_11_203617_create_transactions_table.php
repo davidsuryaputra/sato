@@ -14,10 +14,10 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type');
-            $table->integer('source_id')->unsigned();
-            $table->integer('accountant_id')->unsigned();
+            // $table->string('type');
             $table->integer('showroom_id')->unsigned();
+            $table->integer('customer_id')->unsigned();
+            $table->integer('operator_id')->unsigned();
             $table->text('description');
             $table->integer('total');
             $table->softDeletes();

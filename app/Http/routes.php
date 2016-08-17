@@ -123,37 +123,59 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
 
   // /bonuses /bonuses/create /bonuses/{id} /bonuses/{id}/edit
 
+  // pindahan dari operator
+  Route::get('materials', 'ManagerController@materialsIndex')->name('manager.materials.index');
+  Route::get('materials/create', 'ManagerController@materialsCreate')->name('manager.materials.create');
+  Route::post('materials/store', 'ManagerController@materialsStore')->name('manager.materials.store');
+  Route::get('materials/{id}/edit', 'ManagerController@materialsEdit')->name('manager.materials.edit');
+
+  Route::get('materials/{id}/stock', 'ManagerController@materialsStock')->name('manager.materials.stock');
+  Route::post('materials/{id}/update_stock', 'ManagerController@materialsUpdateStock')->name('manager.materials.updatestock');
+
+  Route::patch('materials/{id}/update', 'ManagerController@materialsUpdate')->name('manager.materials.update');
+  Route::get('materials/{id}/destroy', 'ManagerController@materialsDestroy')->name('manager.materials.destroy');
+
+  Route::get('assets', 'ManagerController@assetsIndex')->name('manager.assets.index');
+  Route::get('assets/create', 'ManagerController@assetsCreate')->name('manager.assets.create');
+  Route::post('assets/store', 'ManagerController@assetsStore')->name('manager.assets.store');
+  Route::get('assets/{id}/edit', 'ManagerController@assetsEdit')->name('manager.assets.edit');
+  Route::patch('assets/{id}/update', 'ManagerController@assetsUpdate')->name('manager.assets.update');
+
+  Route::get('assets/{id}/stock', 'ManagerController@assetsStock')->name('manager.assets.stock');
+  Route::post('assets/{id}/update_stock', 'ManagerController@assetsUpdateStock')->name('manager.assets.updatestock');
+
+  Route::get('assets/{id}/destroy', 'ManagerController@assetsDestroy')->name('manager.assets.destroy');
 
 });
 
 //operator
-Route::group(['prefix' => 'operator', 'middleware' => ['auth', 'role:operator']], function () {
+Route::group(['middleware' => ['auth', 'role:operator']], function () {
 
-  //stock
-    //income
-    //outcome
-  //asset
-    //income
-    //outcome
+  //pindahan dari accountant
+  //list transaction in out
+  Route::get('transactions', 'OperatorController@index')->name('operator.index');
+  Route::get('transactions/{id}/show', 'OperatorController@show')->name('operator.show');
 
-  //item
-    //transaksi
-      //pilih category
-      //pilih inc/out
+  //view detail transaction
+  // Route::get('transactions/{id}', 'OperatorController@show')->name('operator.show');
 
-  Route::get('materials', 'OperatorController@materialsIndex')->name('operator.materials.index');
-  Route::get('materials/create', 'OperatorController@materialsCreate')->name('operator.materials.create');
-  Route::post('materials/store', 'OperatorController@materialsStore')->name('operator.materials.store');
-  Route::get('materials/{id}/edit', 'OperatorController@materialsEdit')->name('operator.materials.edit');
-  Route::patch('materials/{id}/update', 'OperatorController@materialsUpdate')->name('operator.materials.update');
-  Route::get('materials/{id}/destroy', 'OperatorController@materialsDestroy')->name('operator.materials.destroy');
+  //create transaction form
+  Route::get('transactions/create', 'OperatorController@create')->name('operator.create');
+  Route::get('search/product', 'OperatorController@autocompleteItem')->name('operator.autocomplete');
+  Route::get('search/customer', 'OperatorController@autocompleteCustomer')->name('operator.autocompleteCustomer');
+  Route::post('transactions/additem', 'OperatorController@additem')->name('operator.additem');
+  Route::get('transactions/deleteitem/{id}', 'OperatorController@deleteitem')->name('operator.deleteitem');
+  Route::post('transactions/clearitems', 'OperatorController@clearitems')->name('operator.clearitems');
+  Route::get('transactions/store', 'OperatorController@store')->name('operator.store');
 
-  Route::get('assets', 'OperatorController@assetsIndex')->name('operator.assets.index');
-  Route::get('assets/create', 'OperatorController@assetsCreate')->name('operator.assets.create');
-  Route::post('assets/store', 'OperatorController@assetsStore')->name('operator.assets.store');
-  Route::get('assets/{id}/edit', 'OperatorController@assetsEdit')->name('operator.assets.edit');
-  Route::patch('assets/{id}/update', 'OperatorController@assetsUpdate')->name('operator.assets.update');
-  Route::get('assets/{id}/destroy', 'OperatorController@assetsDestroy')->name('operator.assets.destroy');
+  //tambah pelanggan
+  Route::get('clients', 'OperatorController@indexClient')->name('operator.clients.index');
+  Route::get('clients/create', 'OperatorController@createClient')->name('operator.clients.create');
+  Route::post('clients/store', 'OperatorController@storeClient')->name('operator.clients.store');
+  Route::get('clients/{id}/edit', 'OperatorController@editClient')->name('operator.clients.edit');
+  Route::patch('clients/{id}/update', 'OperatorController@updateClient')->name('operator.clients.update');
+  Route::get('clients/{id}/delete', 'OperatorController@destroyClient')->name('operator.clients.destroy');
+
 
 });
 
@@ -161,18 +183,9 @@ Route::group(['prefix' => 'operator', 'middleware' => ['auth', 'role:operator']]
 //accountant
 Route::group(['middleware' => ['auth','role:accountant']], function () {
 
-  //list transaction in out
-  Route::get('transactions', 'AccountantController@index')->name('accountant.index');
 
-  //view detail transaction
-  // Route::get('transactions/{id}', 'AccountantController@show')->name('accountant.show');
 
-  //create transaction form
-  Route::get('transactions/create', 'AccountantController@create')->name('accountant.create');
-  // Route::get('transactions/create', function (){
-  //   return 'hi';
-  // });
-  Route::post('transactions/store', 'AccountantController@store')->name('accountant.store');
+
 
 });
 

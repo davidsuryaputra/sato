@@ -32,8 +32,8 @@ class User extends Authenticatable
       return $this->belongsTo(Showroom::class);
     }
 
-    public function handleShowroom(){
-      return $this->hasOne(Showroom::class);
+    public function transactions(){
+      return $this->hasMany(Transaction::class);
     }
 
     public function hasRole($role){

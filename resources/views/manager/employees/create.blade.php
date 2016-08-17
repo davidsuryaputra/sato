@@ -38,6 +38,29 @@
       <li><a href="{{ url('pricings/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
     </ul>
   </li>
+
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-home"></i> <span>Persediaan</span> <i class="fa fa-angle-left pull-right"></i>
+    </a>
+
+    <ul class="treeview-menu">
+      <li><a href="{{ url('materials') }}"><i class="fa fa-circle-o"></i> Semua Persediaan</a></li>
+      <li><a href="{{ url('materials/create') }}"><i class="fa fa-circle-o"></i> Tambah Persediaan</a></li>
+    </ul>
+
+  </li>
+
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-edit"></i> <span>Aktiva Tetap</span>
+      <i class="fa fa-angle-left pull-right"></i>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="{{ url('assets') }}"><i class="fa fa-circle-o"></i> Semua Aktiva Tetap</a></li>
+      <li><a href="{{ url('assets/create') }}"><i class="fa fa-circle-o"></i> Tambah Aktiva Tetap</a></li>
+    </ul>
+  </li>
   @endif
 
 </ul>
