@@ -76,6 +76,7 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'D' => 
         array (
             'Dotenv\\' => 7,
+            'Dompdf\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
         ),
         'C' => 
@@ -83,6 +84,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
             'Collective\\Html\\' => 16,
             'ClassPreloader\\' => 15,
             'Carbon\\' => 7,
+        ),
+        'B' => 
+        array (
+            'Barryvdh\\DomPDF\\' => 16,
         ),
         'A' => 
         array (
@@ -201,6 +206,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
+        'Dompdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
+        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
@@ -217,6 +226,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
         ),
+        'Barryvdh\\DomPDF\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -224,6 +237,13 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
     );
 
     public static $prefixesPsr0 = array (
+        'S' => 
+        array (
+            'Svg\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src',
+            ),
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 
@@ -253,6 +273,13 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
                 0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
             ),
         ),
+        'F' => 
+        array (
+            'FontLib\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/phenx/php-font-lib/src',
+            ),
+        ),
         'D' => 
         array (
             'Doctrine\\Common\\Inflector\\' => 
@@ -271,6 +298,7 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
 
     public static $classMap = array (
         'BaseTableSeeder' => __DIR__ . '/../..' . '/database/seeds/BaseTableSeeder.php',
+        'Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'CreateAdsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_203529_create_ads_table.php',
         'CreateAdvertisersTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_29_073946_create_advertisers_table.php',
         'CreateBillDetailsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_185038_create_bill_details_table.php',
@@ -291,6 +319,11 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
+        'HTML5_Data' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Data.php',
+        'HTML5_InputStream' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/InputStream.php',
+        'HTML5_Parser' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Parser.php',
+        'HTML5_Tokenizer' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Tokenizer.php',
+        'HTML5_TreeBuilder' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/TreeBuilder.php',
         'Hamcrest\\Arrays\\IsArray' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArray.php',
         'Hamcrest\\Arrays\\IsArrayContaining' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContaining.php',
         'Hamcrest\\Arrays\\IsArrayContainingInAnyOrder' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContainingInAnyOrder.php',
@@ -793,11 +826,6 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
         'TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
-        'baseTableSeeder' => __DIR__ . '/../..' . '/database/seeds/baseTableSeeder.php',
-        'basic_seeder' => __DIR__ . '/../..' . '/database/seeds/basic_seeder.php',
-        'item_categories_table_seeder' => __DIR__ . '/../..' . '/database/seeds/item_categories_table_seeder.php',
-        'roles_table_seeder' => __DIR__ . '/../..' . '/database/seeds/roles_table_seeder.php',
-        'users_table_seeder' => __DIR__ . '/../..' . '/database/seeds/users_table_seeder.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

@@ -168,6 +168,9 @@ Route::group(['middleware' => ['auth', 'role:operator']], function () {
   Route::post('transactions/clearitems', 'OperatorController@clearitems')->name('operator.clearitems');
   Route::get('transactions/store', 'OperatorController@store')->name('operator.store');
 
+
+  Route::get('transaction/{id}/export', 'OperatorController@export')->name('operator.transaction.export');
+
   //tambah pelanggan
   Route::get('clients', 'OperatorController@indexClient')->name('operator.clients.index');
   Route::get('clients/create', 'OperatorController@createClient')->name('operator.clients.create');
@@ -190,26 +193,12 @@ Route::group(['middleware' => ['auth','role:accountant']], function () {
 });
 
 
-/*
 //client
-Route::group(['prefix' => 'client', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'client', 'middleware' => ['auth', 'role:client']], function () {
 
   //topup
-  Route::get('/', function () {
-    return 'list top up, transaction';
-  });
-
-  Route::get('reload', function () {
-    return 'top up form';
-  });
-
-  Route::get('reload/1', function () {
-    return 'top up invoice';
-  });
-
-  Route::get('reload/1/edit', function () {
-    return 'edit top up as long as not yet approved';
-  });
+  Route::get('/transactions', 'ClientController@index')->name('client.transaction.index');
+  Route::get('/transactions/{id}/show', 'ClientController@show')->name('client.transaction.show');
+  Route::get('/transactions/{id}/export', 'ClientController@export')->name('client.transaction.export');
 
 });
-*/

@@ -59,6 +59,20 @@ class OperatorController extends Controller
         return view('operator.transaction.show', compact('transaction', 'transactionDetails', 'showroomName'));
     }
 
+    public function export($id)
+    {
+
+
+      $transaction = Transaction::find($id);
+
+      $transactionDetails = TransactionDetail::where('transaction_id', $id)->get();
+
+      $pdf = \App::make('dompdf.wrapper');
+      $pdf->loadView('operator.transaction.export', compact('transaction', 'transactionDetails'));
+      return $pdf->stream();
+
+    }
+
     public function create()
     {
 

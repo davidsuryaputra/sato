@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'BaseTableSeeder' => $baseDir . '/database/seeds/BaseTableSeeder.php',
+    'Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',
     'CreateAdsTable' => $baseDir . '/database/migrations/2016_06_11_203529_create_ads_table.php',
     'CreateAdvertisersTable' => $baseDir . '/database/migrations/2016_06_29_073946_create_advertisers_table.php',
     'CreateBillDetailsTable' => $baseDir . '/database/migrations/2016_06_11_185038_create_bill_details_table.php',
@@ -27,6 +28,11 @@ return array(
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/src/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/src/Facade.php',
     'File_Iterator_Factory' => $vendorDir . '/phpunit/php-file-iterator/src/Factory.php',
+    'HTML5_Data' => $vendorDir . '/dompdf/dompdf/lib/html5lib/Data.php',
+    'HTML5_InputStream' => $vendorDir . '/dompdf/dompdf/lib/html5lib/InputStream.php',
+    'HTML5_Parser' => $vendorDir . '/dompdf/dompdf/lib/html5lib/Parser.php',
+    'HTML5_Tokenizer' => $vendorDir . '/dompdf/dompdf/lib/html5lib/Tokenizer.php',
+    'HTML5_TreeBuilder' => $vendorDir . '/dompdf/dompdf/lib/html5lib/TreeBuilder.php',
     'Hamcrest\\Arrays\\IsArray' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArray.php',
     'Hamcrest\\Arrays\\IsArrayContaining' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContaining.php',
     'Hamcrest\\Arrays\\IsArrayContainingInAnyOrder' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContainingInAnyOrder.php',
@@ -529,9 +535,4 @@ return array(
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
     'TestCase' => $baseDir . '/tests/TestCase.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
-    'baseTableSeeder' => $baseDir . '/database/seeds/baseTableSeeder.php',
-    'basic_seeder' => $baseDir . '/database/seeds/basic_seeder.php',
-    'item_categories_table_seeder' => $baseDir . '/database/seeds/item_categories_table_seeder.php',
-    'roles_table_seeder' => $baseDir . '/database/seeds/roles_table_seeder.php',
-    'users_table_seeder' => $baseDir . '/database/seeds/users_table_seeder.php',
 );

@@ -158,6 +158,7 @@
               <!-- <button type="submit" name="pay" class="pay btn btn-md btn-success">
                 <i class="fa fa-money"></i> Print
               </button> -->
+              <a href="{{ route('operator.transaction.export', $transaction->id ) }}" target="_blank" class="btn btn-success btn-md"><i class="fa fa-print"></i> Export & Print</a>
               <a href="{{ url('transactions') }}" class="btn btn-success btn-md"><i class="fa fa-trash"></i> Kembali</a>
             </div>
           </div>
