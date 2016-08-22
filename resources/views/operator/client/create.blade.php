@@ -101,6 +101,20 @@
 
               </div>
 
+              <div class="form-group {{ $errors->has('no_kendaraan') ? 'has-error' : ''  }}">
+                <label>Nomor Kendaraan</label>
+                <input class="form-control" name="no_kendaraan" type="text">
+
+                @if($errors->has('no_kendaraan'))
+                <label class="control-label">
+                <i class="fa fa-times-circle-o"></i>
+                {{ $errors->first('no_kendaraan') }}
+                </label>
+                @endif
+
+              </div>
+
+              {{--
               <div class="form-group {{ $errors->has('password') ? 'has-error' : ''  }}">
                 <label>Password</label>
                 <input class="form-control" name="password" type="password">
@@ -117,6 +131,7 @@
                 @endif
 
               </div>
+              --}}
 
               <div class="form-group {{ $errors->has('name') ? 'has-error' : ''  }}">
                 <label>Nama</label>
@@ -170,6 +185,7 @@
 
               </div>
 
+              {{--
               <div class="form-group {{ $errors->has('balance') ? 'has-error' : ''  }}">
                 <label>Saldo</label>
                 <input class="form-control" placeholder="5000000" name="balance" type="text">
@@ -182,6 +198,7 @@
                 @endif
 
               </div>
+              --}}
 
               <!-- select -->
 

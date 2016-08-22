@@ -108,7 +108,7 @@
                     <th>Alamat</th>
                     <th>Kota</th>
                     <th>Telepon</th>
-                    <th>Saldo</th>
+                    <th>No Kendaraan</th>
                     <th>Pilihan</th>
                   </tr>
                   @foreach($clients as $client)
@@ -118,7 +118,7 @@
                     <td>{{ $client->address }}</td>
                     <td>{{ $client->city }}</td>
                     <td>{{ $client->phone }}</td>
-                    <td>{{ $client->balance }}</td>
+                    <td>{{ $client->no_kendaraan }}</td>
                     <td>
                       <a href="{{ route('operator.clients.destroy', $client->id) }}" role="button" class="btn btn-danger">Delete</a>
                       <a href="{{ route('operator.clients.edit', $client->id) }}" role="button" class="btn btn-warning">Edit</a>

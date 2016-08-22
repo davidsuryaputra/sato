@@ -49,13 +49,6 @@ class OperatorController extends Controller
 
         $transactionDetails = TransactionDetail::where('transaction_id', $id)->get();
 
-        // foreach($transaction->details as $item)
-        // {
-        //   echo $item->sub_total."\n";
-        // }
-
-        // return $transaction->details;
-        // return $transactionDetails;
         return view('operator.transaction.show', compact('transaction', 'transactionDetails', 'showroomName'));
     }
 
@@ -341,22 +334,22 @@ class OperatorController extends Controller
     {
       $this->validate($request, [
         'email' => 'required|email|unique:users',
-        'password' => 'required|confirmed|min:5|max:20',
+        'no_kendaraan' => 'required|max:15',
         'name' => 'required|max:30',
         'address' => 'required|max:100',
         'city' => 'required|max:20',
         'phone' => 'required|numeric',
-        'balance' => 'required|digits_between:1,10',
+        // 'balance' => 'required|digits_between:1,10',
       ]);
 
       $client = new User;
       $client->email = $request->email;
-      $client->password = bcrypt($request->password);
+      $client->no_kendaraan = $request->no_kendaraan;
       $client->name = $request->name;
       $client->address = $request->address;
       $client->city = $request->city;
       $client->phone = $request->phone;
-      $client->balance = $request->balance;
+      // $client->balance = $request->balance;
       $client->role_id = 5;
       $client->showroom_id = Auth::user()->showroom_id;
       $client->save();

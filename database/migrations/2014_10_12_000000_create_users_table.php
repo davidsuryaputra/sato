@@ -21,9 +21,10 @@ class CreateUsersTable extends Migration
             $table->integer('role_id')->unsigned();
             $table->integer('showroom_id')->nullable()->unsigned();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->integer('balance')->nullable();
             $table->integer('salary')->nullable();
+            $table->string('no_kendaraan')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
