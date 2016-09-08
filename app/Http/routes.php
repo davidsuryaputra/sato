@@ -30,8 +30,22 @@ Route::get('denied/{role}', function ($role) {
 
 end contoh acl simple */
 
-
+// use Illuminate\Support\Facades\App;
+// use LaravelPusher;
 // Route::auth();
+Route::get('/jembatan', function (){
+  // $message = 'mantap coyyy';
+  // $pusherx = App::make('pusher');
+  // LaravelPusher::trigger('my-channel', 'my-event', ['message' => $message]);
+  $messages = [
+    "id" => 5,
+    "jenis" => 'afdsa',
+    "no_kendaraan" => 'L 1334 H',
+    "status" => 'Menunggu',
+  ];
+  LaravelPusher::trigger('antrian', 'newAntrian', $messages);
+  return 'success';
+});
 
 Route::get('/', 'Auth\AuthController@showLoginForm');
 Route::post('/', 'Auth\AuthController@login');
@@ -45,15 +59,14 @@ Route::post('/password/reset', 'Auth\AuthController@reset');
 Route::post('/password/email', 'Auth\AuthController@sendResetLinkEmail');
 
 Route::get('/logout', 'Auth\AuthController@logout');
+
 //*/
 
-Route::get('/home', 'HomeController@index');
+Route::get('/home', 'HomeController@index')->name('home');
 
 //route inti
 
-Route::get('cek', function(){
-  return dd(Auth::user()->showroom->name);
-});
+Route::get('layarAntrian/{id}', 'GuestController@layarAntrian')->name('guest.layarAntrian');
 
 //owner
 Route::group(['prefix' => 'owner', 'middleware' => ['auth', 'role:owner']], function () {
@@ -67,7 +80,8 @@ Route::group(['prefix' => 'owner', 'middleware' => ['auth', 'role:owner']], func
 
   Route::post('showrooms/create', 'OwnerController@storeShowroom')->name('owner.showrooms.create');
 
-  Route::get('showrooms/{id}/delete', 'OwnerController@destroyShowroom')->name('owner.showrooms.delete');
+  Route::get('showrooms/{id}/show', 'OwnerController@showShowroom')->name('owner.showrooms.show');
+  Route::get('showrooms/{id}/delete', 'OwnerController@destroyShowroom')->name('owner.showrooms.destroy');
 
   Route::get('showrooms/{id}/edit', 'OwnerController@editShowroom')->name('owner.showrooms.edit');
 
@@ -77,8 +91,13 @@ Route::group(['prefix' => 'owner', 'middleware' => ['auth', 'role:owner']], func
   //input manager baru
     // /managers
   Route::get('managers', 'OwnerController@indexManager')->name('owner.managers.index');
-
+  Route::get('managers/{id}/show', 'OwnerController@showManager')->name('owner.managers.show');
   Route::get('managers/create', 'OwnerController@createManager')->name('owner.managers.create');
+  /*
+  Route::get('managers/create', function (){
+    return 'x bro';
+  });
+  */
 
   Route::post('managers/create', 'OwnerController@storeManager')->name('owner.managers.store');
 
@@ -151,44 +170,50 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
 //operator
 Route::group(['middleware' => ['auth', 'role:operator']], function () {
 
-  //pindahan dari accountant
-  //list transaction in out
-  Route::get('transactions', 'OperatorController@index')->name('operator.index');
-  Route::get('transactions/{id}/show', 'OperatorController@show')->name('operator.show');
-
-  //view detail transaction
-  // Route::get('transactions/{id}', 'OperatorController@show')->name('operator.show');
-
-  //create transaction form
-  Route::get('transactions/create', 'OperatorController@create')->name('operator.create');
-  Route::get('search/product', 'OperatorController@autocompleteItem')->name('operator.autocomplete');
-  Route::get('search/customer', 'OperatorController@autocompleteCustomer')->name('operator.autocompleteCustomer');
-  Route::post('transactions/additem', 'OperatorController@additem')->name('operator.additem');
-  Route::get('transactions/deleteitem/{id}', 'OperatorController@deleteitem')->name('operator.deleteitem');
-  Route::post('transactions/clearitems', 'OperatorController@clearitems')->name('operator.clearitems');
-  Route::get('transactions/store', 'OperatorController@store')->name('operator.store');
-
-
-  Route::get('transaction/{id}/export', 'OperatorController@export')->name('operator.transaction.export');
-
   //tambah pelanggan
+  //probably unused
+  /*
   Route::get('clients', 'OperatorController@indexClient')->name('operator.clients.index');
-  Route::get('clients/create', 'OperatorController@createClient')->name('operator.clients.create');
-  Route::post('clients/store', 'OperatorController@storeClient')->name('operator.clients.store');
   Route::get('clients/{id}/edit', 'OperatorController@editClient')->name('operator.clients.edit');
   Route::patch('clients/{id}/update', 'OperatorController@updateClient')->name('operator.clients.update');
   Route::get('clients/{id}/delete', 'OperatorController@destroyClient')->name('operator.clients.destroy');
+  */
+
+  //real operator
+  // Route::get('clients/create', 'OperatorController@createClient')->name('operator.clients.create');
+  Route::get('terimaPelanggan', 'OperatorController@terimaPelanggan')->name('operator.terimaPelanggan');
+  Route::post('clientStore', 'OperatorController@clientStore')->name('operator.clientStore');
+  Route::get('antrian', 'OperatorController@antrian')->name('operator.antrian');
+  // Route::get('layarAntrian', 'OperatorController@layarAntrian')->name('operator.layarAntrian');
+  Route::get('updateStatus', 'OperatorController@updateStatus')->name('operator.updateStatus');
 
 
 });
 
 
-//accountant
-Route::group(['middleware' => ['auth','role:accountant']], function () {
+//cashier
+Route::group(['middleware' => ['auth','role:cashier']], function () {
+
+  //pindahan dari operator
+  Route::get('antrianKasir', 'CashierController@antrian')->name('cashier.antrian');
+  //list transaction in out
+  Route::get('transactions', 'CashierController@index')->name('cashier.index');
+  Route::get('transactions/{id}/show', 'CashierController@show')->name('cashier.show');
+
+  //view detail transaction
+  // Route::get('transactions/{id}', 'OperatorController@show')->name('operator.show');
+
+  //create transaction form
+  Route::get('transactions/create/{id}', 'CashierController@create')->name('cashier.create');
+  Route::get('search/product', 'CashierController@autocompleteItem')->name('cashier.autocomplete');
+  Route::get('search/customer', 'CashierController@autocompleteCustomer')->name('cashier.autocompleteCustomer');
+  Route::post('transactions/additem', 'CashierController@additem')->name('cashier.additem');
+  Route::get('transactions/deleteitem/{id}', 'CashierController@deleteitem')->name('cashier.deleteitem');
+  Route::post('transactions/clearitems', 'CashierController@clearitems')->name('cashier.clearitems');
+  Route::get('transactions/store', 'CashierController@store')->name('cashier.store');
 
 
-
-
+  Route::get('transaction/{id}/export', 'CashierController@export')->name('cashier.transaction.export');
 
 });
 

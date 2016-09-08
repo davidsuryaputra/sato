@@ -32,6 +32,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         array (
             'Webmozart\\Assert\\' => 17,
         ),
+        'V' => 
+        array (
+            'Vinkla\\Pusher\\' => 14,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Util\\' => 22,
@@ -68,6 +72,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'I' => 
         array (
             'Illuminate\\' => 11,
+        ),
+        'G' => 
+        array (
+            'GrahamCampbell\\Manager\\' => 23,
         ),
         'F' => 
         array (
@@ -109,6 +117,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Vinkla\\Pusher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vinkla/pusher/src',
         ),
         'Symfony\\Polyfill\\Util\\' => 
         array (
@@ -197,6 +209,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'Illuminate\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate',
+        ),
+        'GrahamCampbell\\Manager\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/graham-campbell/manager/src',
         ),
         'Faker\\' => 
         array (
@@ -303,12 +319,13 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'CreateAdvertisersTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_29_073946_create_advertisers_table.php',
         'CreateBillDetailsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_185038_create_bill_details_table.php',
         'CreateBillsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_185037_create_bills_table.php',
-        'CreateForeignKey' => __DIR__ . '/../..' . '/database/migrations/2016_07_03_041142_create_foreign_key.php',
+        'CreateForeignKey' => __DIR__ . '/../..' . '/database/migrations/2016_08_03_041142_create_foreign_key.php',
         'CreateItemCategoriesTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_184654_create_item_categories_table.php',
         'CreateItemsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_184636_create_items_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreatePurchaseOrderDetailsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_29_073948_create_purchase_order_details_table.php',
         'CreatePurchaseOrdersTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_29_073947_create_purchase_orders_table.php',
+        'CreateQueuesTable' => __DIR__ . '/../..' . '/database/migrations/2016_07_30_104617_create_queues_table.php',
         'CreateRolesTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_10_145637_create_roles_table.php',
         'CreateSalaryTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_16_085806_create_salary_table.php',
         'CreateShowroomsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_184817_create_showrooms_table.php',
@@ -788,6 +805,9 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'PHP_Token_XOR_EQUAL' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'Pusher' => __DIR__ . '/..' . '/pusher/pusher-php-server/lib/Pusher.php',
+        'PusherException' => __DIR__ . '/..' . '/pusher/pusher-php-server/lib/Pusher.php',
+        'PusherInstance' => __DIR__ . '/..' . '/pusher/pusher-php-server/lib/Pusher.php',
         'SebastianBergmann\\Comparator\\ArrayComparator' => __DIR__ . '/..' . '/sebastian/comparator/src/ArrayComparator.php',
         'SebastianBergmann\\Comparator\\Comparator' => __DIR__ . '/..' . '/sebastian/comparator/src/Comparator.php',
         'SebastianBergmann\\Comparator\\ComparisonFailure' => __DIR__ . '/..' . '/sebastian/comparator/src/ComparisonFailure.php',

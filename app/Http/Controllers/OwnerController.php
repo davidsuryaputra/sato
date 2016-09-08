@@ -34,6 +34,7 @@ class OwnerController extends Controller
      */
     public function createManager()
     {
+
         $showroomKosong = 0;
         $showrooms = Showroom::all();
         foreach($showrooms as $showroom){
@@ -42,8 +43,10 @@ class OwnerController extends Controller
           }
         }
 
+
         return view('owner.managers.create', compact('showrooms', 'showroomKosong'));
-        //
+        // return view('owner.managers.create');
+        // return 'x';
     }
 
     /**
@@ -60,7 +63,7 @@ class OwnerController extends Controller
           'address' => 'required|max:100',
           'city'  => 'required|max:20',
           'phone' => 'required|numeric',
-          'balance' => 'required|digits_between:5,10',
+          // 'balance' => 'required|digits_between:5,10',
         ]);
 
         $data = $request->all();
@@ -113,9 +116,17 @@ class OwnerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showManager($id)
     {
-        //
+        $manager = User::where('id', $id)->where('role_id', 2)->first();
+        return view('owner.managers.show', compact('manager'));
+        // return "your id is $id";
+    }
+
+    public function showShowroom($id)
+    {
+      $showroom = Showroom::find($id);
+      return view('owner.showrooms.show', compact('showroom'));
     }
 
     /**
@@ -162,8 +173,8 @@ class OwnerController extends Controller
         'address' => 'required|max:100',
         'city'  => 'required|max:20',
         'phone' => 'required|numeric',
-        'balance' => 'required|digits_between:5,10',
-        // 'manager' => 'required|numeric',
+        // 'balance' => 'required|digits_between:5,10',
+        'manager' => 'numeric',
       ]);
 
         $showroom = Showroom::find($id);
@@ -188,7 +199,17 @@ class OwnerController extends Controller
     public function updateManager(Request $request, $id)
     {
         $manager = User::find($id);
-        $manager->update($request->all());
+        $manager->name = $request->name;
+        $manager->address = $request->address;
+        $manager->city = $request->city;
+        $manager->phone= $request->phone;
+        $manager->balance = $request->balance;
+        $manager->password = bcrypt($request->password);
+        if($manager->showroom_id == null){
+          $manager->showroom_id = $request->showroom;
+        }
+        $manager->save();
+
         return redirect()->route('owner.managers.index');
     }
 
@@ -216,6 +237,8 @@ class OwnerController extends Controller
     {
         $manager = User::find($id);
         $manager->delete();
-        return redirect()->route('owner.managers.index');
+        // return redirect()->route('owner.managers.index');
+        return redirect()->route('home');
+        // return $id;
     }
 }

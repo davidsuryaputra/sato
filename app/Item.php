@@ -25,4 +25,8 @@ class Item extends Model
       return $this->hasMany(TransactionDetail::class);
     }
 
+    public function queues()
+    {
+      return $this->hasMany(Queue::class);
+    }
 }

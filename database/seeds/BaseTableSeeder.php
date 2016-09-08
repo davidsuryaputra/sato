@@ -17,7 +17,7 @@ class BaseTableSeeder extends Seeder
         DB::table('roles')->insert([
           ['id' => 1, 'name' => 'owner'],
           ['id' => 2, 'name' => 'manager'],
-          ['id' => 3, 'name' => 'accountant'],
+          ['id' => 3, 'name' => 'cashier'],
           ['id' => 4, 'name' => 'operator'],
           ['id' => 5, 'name' => 'client'],
         ]);
@@ -82,10 +82,10 @@ class BaseTableSeeder extends Seeder
             ],
             [
               'id'  => 3,
-              'email' => 'accountant@sato.co.id',
+              'email' => 'cashier@sato.co.id',
               'password' => bcrypt('123456789'),
-              'name'  => 'Mr. Accountant',
-              'address' => 'JL. Sato Akunting',
+              'name'  => 'Mr. Cashier',
+              'address' => 'JL. Sato Cashier',
               'city' => 'Gresik',
               'phone' => '085700000000',
               'no_kendaraan' => null,

@@ -17,10 +17,11 @@
 
   @if($showroomName != "Belum Ada Izin")
   <li class="treeview">
-    <a href="#">
-      <i class="fa fa-home"></i> <span>Transaksi</span> <i class="fa fa-angle-left pull-right"></i>
+    <a href="{{ url('terimaPelanggan') }}">
+      <i class="fa fa-home"></i> <span>Terima Pelanggan</span></i>
     </a>
 
+    {{--
     <ul class="treeview-menu">
       <li>
       <a href="{{ url('transactions') }}">
@@ -34,14 +35,15 @@
       </a>
       </li>
     </ul>
+    --}}
 
   </li>
 
   <li class="treeview">
-    <a href="#">
-      <i class="fa fa-home"></i> <span>Pelanggan</span> <i class="fa fa-angle-left pull-right"></i>
+    <a href="{{ url('antrian') }}">
+      <i class="fa fa-home"></i> <span>Antrian</span>
     </a>
-
+    {{--
     <ul class="treeview-menu">
       <li>
         <a href="{{ url('clients') }}">
@@ -55,6 +57,13 @@
           </a>
       </li>
     </ul>
+    --}}
+  </li>
+
+  <li class="treeview">
+    <a href="{{ url('layarAntrian') }}" target="_blank">
+      <i class="fa fa-home"></i> <span>Layar Antrian</span>
+    </a>
   </li>
   @endif
 

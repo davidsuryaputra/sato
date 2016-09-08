@@ -39,4 +39,8 @@ class User extends Authenticatable
     public function hasRole($role){
       dd($this);
     }
+
+    public function queues(){
+      return $this->hasMany(Queue::class);
+    }
 }
