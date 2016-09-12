@@ -100,7 +100,7 @@ class OperatorController extends Controller
 
     public function clientStore(Request $request)
     {
-      $this->validate($request, [
+      $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'no_kendaraan' => 'required|max:15',
         'title' => 'required',
@@ -112,75 +112,86 @@ class OperatorController extends Controller
         // 'balance' => 'required|digits_between:1,10',
       ]);
 
-      $client = User::where('email', $request->email)->first();
-
-      if($client != null ){
-
-        $queue = new Queue;
-        $queue->customer_id = $client->id;
-        $queue->showroom_id = Auth::user()->showroom_id;
-        $queue->item_id = $request->jenis;
-        $queue->no_kendaraan = $request->no_kendaraan;
-        $queue->status = 'Menunggu';
-        $queue->save();
-
-        $item = Item::find($request->jenis);
-        //pusher notification new queue
-        $messages = [
-          "id" => $queue->id,
-          "customer_id" => Auth::user()->id,
-          "showroom_id" => Auth::user()->showroom_id,
-          "item_id" => $request->jenis,
-          "jenis" => $item->name,
-          "no_kendaraan" => $queue->no_kendaraan,
-          "status" => 'Menunggu',
-        ];
-        LaravelPusher::trigger('antrian', 'newAntrian', $messages);
-
-        // $queues = Queue::whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
-
-        return redirect()->route('operator.antrian');
-
+      if($validator->fails()){
+        $url = route('home').'#!/'.route('operator.terimaPelanggan');
+        return redirect($url)->withInput()->withErrors($validator);
       }else{
+        $client = User::where('email', $request->email)->first();
 
-        $client = new User;
-        $client->email = $request->email;
-        $client->no_kendaraan = $request->no_kendaraan;
-        $client->name = $request->title ." ". $request->name;
-        $client->address = $request->address;
-        $client->city = $request->city;
-        $client->phone = $request->phone;
-        // $client->balance = $request->balance;
-        $client->role_id = 5;
-        $client->showroom_id = Auth::user()->showroom_id;
-        $client->save();
+        if($client != null ){
 
-        $queue = new Queue;
-        $queue->customer_id = $client->id;
-        $queue->showroom_id = Auth::user()->showroom_id;
-        $queue->item_id = $request->jenis;
-        $queue->no_kendaraan = $request->no_kendaraan;
-        $queue->status = 'Menunggu';
-        $queue->save();
+          $queue = new Queue;
+          $queue->customer_id = $client->id;
+          $queue->showroom_id = Auth::user()->showroom_id;
+          $queue->item_id = $request->jenis;
+          $queue->no_kendaraan = $request->no_kendaraan;
+          $queue->status = 'Menunggu';
+          $queue->save();
 
-        $item = Item::find($request->jenis);
-        //pusher notification
-        $messages = [
-          "id" => $queue->id,
-          "customer_id" => Auth::user()->id,
-          "showroom_id" => Auth::user()->showroom_id,
-          "item_id" => $request->jenis,
-          "jenis" => $item->name,
-          "no_kendaraan" => $queue->no_kendaraan,
-          "status" => 'Menunggu',
-        ];
-        LaravelPusher::trigger('antrian', 'newAntrian', $messages);
+          $item = Item::find($request->jenis);
+          //pusher notification new queue
+          $messages = [
+            "id" => $queue->id,
+            "customer_id" => Auth::user()->id,
+            "showroom_id" => Auth::user()->showroom_id,
+            "item_id" => $request->jenis,
+            "jenis" => $item->name,
+            "no_kendaraan" => $queue->no_kendaraan,
+            "status" => 'Menunggu',
+          ];
+          LaravelPusher::trigger('antrian', 'newAntrian', $messages);
 
-        // $queues = Queue::whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
+          // $queues = Queue::whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
 
-        return redirect()->route('operator.antrian');
+          // return redirect()->route('operator.antrian');
+          $url = route('home').'#!/'.route('operator.antrian');
+          return redirect($url);
 
+        }else{
+
+          $client = new User;
+          $client->email = $request->email;
+          $client->no_kendaraan = $request->no_kendaraan;
+          $client->name = $request->title ." ". $request->name;
+          $client->address = $request->address;
+          $client->city = $request->city;
+          $client->phone = $request->phone;
+          // $client->balance = $request->balance;
+          $client->role_id = 5;
+          $client->showroom_id = Auth::user()->showroom_id;
+          $client->save();
+
+          $queue = new Queue;
+          $queue->customer_id = $client->id;
+          $queue->showroom_id = Auth::user()->showroom_id;
+          $queue->item_id = $request->jenis;
+          $queue->no_kendaraan = $request->no_kendaraan;
+          $queue->status = 'Menunggu';
+          $queue->save();
+
+          $item = Item::find($request->jenis);
+          //pusher notification
+          $messages = [
+            "id" => $queue->id,
+            "customer_id" => Auth::user()->id,
+            "showroom_id" => Auth::user()->showroom_id,
+            "item_id" => $request->jenis,
+            "jenis" => $item->name,
+            "no_kendaraan" => $queue->no_kendaraan,
+            "status" => 'Menunggu',
+          ];
+          LaravelPusher::trigger('antrian', 'newAntrian', $messages);
+
+          // $queues = Queue::whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
+
+          // return redirect()->route('operator.antrian');
+          $url = route('home').'#!/'.route('operator.antrian');
+          return redirect($url);
+
+        }
       }
+
+
     }
 
 
@@ -197,17 +208,10 @@ class OperatorController extends Controller
       return view('operator.antrian', compact('showroomName', 'queues'));
     }
 
-    public function layarAntrian()
+    public function antrianShow($id)
     {
-      if(isset(Auth::user()->showroom->name)){
-        $showroomName = Auth::user()->showroom->name;
-      }else{
-        $showroomName = "Belum Ada Izin";
-      }
-
-      $queues = Queue::where('showroom_id', Auth::user()->showroom->id)->whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan', 'Selesai'])->get();
-
-      return view('operator.layarAntrian', compact('queues', 'showroomName'));
+      $queue = Queue::find($id);
+      return view('operator.show', compact('queue'));
     }
 
     public function updateStatus(Request $request)

@@ -1,155 +1,40 @@
-@extends('layouts.app')
+<div class="pages">
+  <div data-page="projects" class="page no-toolbar no-navbar">
+    <div class="page-content">
 
-@section('title', 'Manager')
+     <div class="navbarpages">
+       <!-- <div class="nav_left_logo"><a href="index.html"><img src="mobix/images/logo.png" alt="" title="" /></a></div> -->
+       <div class="nav_right_button"><a href="{{ url('home') }}"><img src="mobix/images/icons/white/menu.png" alt="" title="" /></a></div>
+     </div>
 
-@section('name', Auth::user()->name)
+     <div id="pages_maincontent">
 
-@section('role', 'Manager')
+              <h2 class="page_title">Tarif</h2>
 
-@section('sidebar-menu')
-<ul class="sidebar-menu">
-  <li class="header">MENU UTAMA</li>
-  <li class="active treeview">
-    <a href="{{ url('home') }}">
-      <i class="fa fa-dashboard"></i> <span>Beranda</span> <!--<i class="fa fa-angle-left pull-right"></i>-->
-    </a>
-  </li>
+              <div class="page_content">
 
-  @if($showroomName != "Belum Ada Izin")
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-home"></i> <span>Pegawai</span> <i class="fa fa-angle-left pull-right"></i>
-    </a>
+                <div class="blog-posts">
 
-    <ul class="treeview-menu">
-      <li><a href="{{ url('pricings') }}"><i class="fa fa-circle-o"></i> Semua Pegawai</a></li>
-      <li><a href="{{ url('pricings/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
-    </ul>
+                <ul class="posts">
+                  @foreach($pricings as $pricing)
+                  <li>
+                      <div class="post_entry">
+                          <div class="post_title">
+                          <h2><a href="{{ route('manager.pricings.show', $pricing->id )}}">{{ $pricing->name }}</a></h2>
+                          </div>
+                      </div>
+                  </li>
+                  @endforeach
+                </ul>
 
-  </li>
+                <div class="clear"></div>
+                <div id="loadMore"><a href="{{ route('manager.pricings.create') }}"><img src="mobix/images/load_posts.png" alt="" title="" /></a></div>
 
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-edit"></i> <span>Tarif</span>
-      <i class="fa fa-angle-left pull-right"></i>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="{{ url('pricings') }}"><i class="fa fa-circle-o"></i> Semua Tarif</a></li>
-      <li><a href="{{ url('pricings/create') }}"><i class="fa fa-circle-o"></i> Tambah Baru</a></li>
-    </ul>
-  </li>
-
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-home"></i> <span>Persediaan</span> <i class="fa fa-angle-left pull-right"></i>
-    </a>
-
-    <ul class="treeview-menu">
-      <li><a href="{{ url('materials') }}"><i class="fa fa-circle-o"></i> Semua Persediaan</a></li>
-      <li><a href="{{ url('materials/create') }}"><i class="fa fa-circle-o"></i> Tambah Persediaan</a></li>
-    </ul>
-
-  </li>
-
-  <li class="treeview">
-    <a href="#">
-      <i class="fa fa-edit"></i> <span>Aktiva Tetap</span>
-      <i class="fa fa-angle-left pull-right"></i>
-    </a>
-    <ul class="treeview-menu">
-      <li><a href="{{ url('assets') }}"><i class="fa fa-circle-o"></i> Semua Aktiva Tetap</a></li>
-      <li><a href="{{ url('assets/create') }}"><i class="fa fa-circle-o"></i> Tambah Aktiva Tetap</a></li>
-    </ul>
-  </li>
-  @endif
-
-</ul>
-
-@endsection
-
-@section('content')
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      {{ $showroomName }}
-      <small>Control panel</small>
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-      <li class="active">Beranda</li>
-    </ol>
-  </section>
-
-  @if($showroomName != "Belum Ada Izin")
-  <!-- Main content -->
-  <section class="content">
-    <div class="row">
-          <div class="col-xs-12">
-            <div class="box">
-              <div class="box-header">
-                <h3 class="box-title">Semua Outlet</h3>
-
-                <div class="box-tools">
-                  {{--
-                  <div class="input-group input-group-sm" style="width: 150px;">
-                    <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
-
-                    <div class="input-group-btn">
-                      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                    </div>
-                  </div>
-                  --}}
                 </div>
               </div>
-              <!-- /.box-header -->
-              <div class="box-body table-responsive no-padding">
+      </div>
 
 
-                <table class="table table-hover">
-                  <tbody><tr>
-                    <th>Nama</th>
-                    <th>Harga</th>
-                    <th>Pilihan</th>
-                  </tr>
-                  @foreach($pricings as $pricing)
-                  <tr>
-                    <td>{{ $pricing->name }}</td>
-                    <td>{{ $pricing->value }}</td>
-                    <td>
-                      <a href="{{ route('manager.pricings.destroy', $pricing->id) }}" role="button" class="btn btn-danger">Delete</a>
-                      <a href="{{ route('manager.pricings.edit', $pricing->id) }}" role="button" class="btn btn-warning">Edit</a>
-                    </td>
-                  </tr>
-                  @endforeach
-                </tbody></table>
-
-              </div>
-              <!-- /.box-body -->
-              {{--
-              <div class="box-footer clearfix">
-                <ul class="pagination pagination-sm no-margin pull-right">
-                  <li><a href="#">«</a></li>
-                  <li><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">»</a></li>
-                </ul>
-              </div>
-              --}}
-            </div>
-            <!-- /.box -->
-          </div>
-        </div>
-  </section>
-
-  <!-- /.content -->
-  @else
-  <section class="content">
-    Silahkan Hubungi Owner
-  </section>
-  @endif
-
+    </div>
+  </div>
 </div>
-
-@endsection

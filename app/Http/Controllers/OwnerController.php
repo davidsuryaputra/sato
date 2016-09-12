@@ -49,6 +49,11 @@ class OwnerController extends Controller
         // return 'x';
     }
 
+    public function createShowroom()
+    {
+      return view('owner.showrooms.create');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -58,7 +63,7 @@ class OwnerController extends Controller
     public function storeShowroom(Request $request)
     {
 
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
           'name' => 'required|max:30',
           'address' => 'required|max:100',
           'city'  => 'required|max:20',
@@ -66,16 +71,28 @@ class OwnerController extends Controller
           // 'balance' => 'required|digits_between:5,10',
         ]);
 
+        if($validator->fails()){
+
+          $url = route('home').'#!/'.route('owner.showrooms.create');
+          return redirect($url)->withInput()->withErrors($validator);
+
+        }else{
+
         $data = $request->all();
         Showroom::create($data);
-        return redirect()->route('owner.showrooms');
+        // return redirect()->route('home');
+        $url = route('home').'#!/'.route('owner.showrooms');
+        return redirect($url)->withInput()->withErrors($validator);
+        }
+        // return redirect()->route('owner.showrooms');
 
     }
 
     public function storeManager(Request $request)
     {
 
-        $this->validate($request, [
+      /*
+      $this->validate($request, [
           'email' => 'required|email|unique:users',
           'password' => 'required|confirmed|min:5|max:20',
           'name' => 'required|max:30',
@@ -85,6 +102,27 @@ class OwnerController extends Controller
           'balance' => 'required|digits_between:5,10',
           // 'showroom' => 'required|numeric',
         ]);
+        */
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed|min:5|max:20',
+            'name' => 'required|max:30',
+            'address' => 'required|max:100',
+            'city'  => 'required|max:20',
+            'phone' => 'required|numeric',
+            'balance' => 'required|digits_between:5,10',
+            // 'showroom' => 'required|numeric',
+          ]);
+
+        if($validator->fails()){
+
+          $url = route('home').'#!/'.route('owner.managers.create');
+          return redirect($url)->withInput()->withErrors($validator);
+          // return $validator->errors();
+
+        }else{
+          // return 'mantap bos';
 
         $manager = new User;
         $manager->email = $request->email;
@@ -105,8 +143,12 @@ class OwnerController extends Controller
         */
 
         $manager->save();
+        // return redirect()->route('home');
+        // return redirect()->route('owner.managers');
+        $url = route('home').'#!/'.route('owner.managers.create');
+        return redirect($url);
 
-        return redirect()->route('owner.managers.index');
+      }
 
     }
 
@@ -168,7 +210,7 @@ class OwnerController extends Controller
     {
       // dd($request->manager);
 
-      $this->validate($request, [
+      $validator = Validator::make($request->all(), [
         'name' => 'required|max:30',
         'address' => 'required|max:100',
         'city'  => 'required|max:20',
@@ -176,6 +218,13 @@ class OwnerController extends Controller
         // 'balance' => 'required|digits_between:5,10',
         'manager' => 'numeric',
       ]);
+
+      if($validator->fails()){
+
+        $url = route('home').'#!/'.route('owner.showrooms.edit', $id);
+        return redirect($url)->withInput()->withErrors($validator);
+
+      }else{
 
         $showroom = Showroom::find($id);
 
@@ -192,12 +241,16 @@ class OwnerController extends Controller
         $showroom->balance = $request->balance;
         $showroom->save();
 
-        return redirect()->route('owner.showrooms');
+        $url = route('home').'#!/'.route('owner.showrooms');
+        return redirect($url);
+        // return redirect()->route('owner.showrooms');
+      }
 
     }
 
     public function updateManager(Request $request, $id)
     {
+
         $manager = User::find($id);
         $manager->name = $request->name;
         $manager->address = $request->address;
@@ -210,7 +263,9 @@ class OwnerController extends Controller
         }
         $manager->save();
 
-        return redirect()->route('owner.managers.index');
+        // return redirect()->route('owner.managers.index');
+        $url = route('home').'#!/'.route('owner.managers.index');
+        return redirect($url);
     }
 
     /**
@@ -224,13 +279,23 @@ class OwnerController extends Controller
         $manager = User::where('role_id', '=', 2)
           ->where('showroom_id', '=', $id)
           ->first();
-        $manager->showroom()->dissociate();
-        $manager->save();
 
-        $showroom = Showroom::find($id);
-        $showroom->delete();
+        if($manager != null)
+        {
+          $manager->showroom()->dissociate();
+          $manager->save();
+
+          $showroom = Showroom::find($id);
+          $showroom->delete();
+        }else{
+          $showroom = Showroom::find($id);
+          $showroom->delete();
+        }
         //remove showroom from user
-        return redirect('owner/showrooms');
+        // return redirect('owner/showrooms');
+        // return redirect()->route('home');
+        $url = route('home').'#!/'.route('owner.showrooms');
+        return redirect($url);
     }
 
     public function destroyManager($id)
@@ -238,7 +303,9 @@ class OwnerController extends Controller
         $manager = User::find($id);
         $manager->delete();
         // return redirect()->route('owner.managers.index');
-        return redirect()->route('home');
-        // return $id;
+        // return redirect()->route('home');
+        $url = route('home').'#!/'.route('owner.managers.index');
+        return redirect($url);
+        // return $url;
     }
 }

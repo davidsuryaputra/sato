@@ -147,8 +147,9 @@
 </div>
 <!-- ./wrapper -->
 
+<script type="text/javascript" src="{{ url('mobix/js/jquery-1.10.1.min.js') }}"></script>
 <!-- jQuery 2.2.0 -->
-<script src="{{ url('plugins/jQuery/jQuery-2.2.0.min.js') }}"></script>
+<!-- <script src="{{ url('plugins/jQuery/jQuery-2.2.0.min.js') }}"></script> -->
 <!-- jQuery UI 1.11.4 -->
 <script src="{{ url('plugins/jQueryUI/jquery-ui.min.js') }}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->

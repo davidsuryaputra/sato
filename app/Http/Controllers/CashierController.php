@@ -31,6 +31,12 @@ class CashierController extends Controller
     return view('cashier.antrian', compact('showroomName', 'queues'));
   }
 
+  public function antrianShow($id)
+  {
+    $queue = Queue::find($id);
+    return view('cashier.show', compact('queue'));
+  }
+
   //pindahan dari operator
   public function index()
   {

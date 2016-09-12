@@ -166,7 +166,7 @@
   var pusher = new Pusher("{{ env('PUSHER_KEY') }}");
   var channel = pusher.subscribe('antrian');
   channel.bind('newAntrian', function (data){
-    if(data.showroom_id == $showroom_id){
+    if(data.showroom_id == {{ $queue->showroom_id }}){
       var tr = "<tr id="+data.id+"><td>#"+data.id+"</td><td>"+data.jenis+"</td><td>"+data.no_kendaraan+"</td><td id='"+data.id+"'>"+data.status+"</td></tr>";
       $('.queue').hide();
       $('.queue').fadeIn('slow');
@@ -176,7 +176,7 @@
     // alert(data.message);
   });
   channel.bind('updateAntrian', function (data){
-    if(data.showroom_id == $showroom_id){
+    if(data.showroom_id == {{ $queue->showroom_id }}){
 
       if(data.status == "Kasir"){
         $('.queue').hide();

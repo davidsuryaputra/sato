@@ -74,11 +74,9 @@ Route::group(['prefix' => 'owner', 'middleware' => ['auth', 'role:owner']], func
   //input showrooms baru >> assign manager (detail n salary)
   Route::get('showrooms', 'OwnerController@indexShowroom')->name('owner.showrooms');
 
-  Route::get('showrooms/create', function () {
-    return view('owner.showrooms.create');
-  });
+  Route::get('showrooms/create', 'OwnerController@createShowroom')->name('owner.showrooms.create');
 
-  Route::post('showrooms/create', 'OwnerController@storeShowroom')->name('owner.showrooms.create');
+  Route::post('showrooms/create', 'OwnerController@storeShowroom')->name('owner.showrooms.store');
 
   Route::get('showrooms/{id}/show', 'OwnerController@showShowroom')->name('owner.showrooms.show');
   Route::get('showrooms/{id}/delete', 'OwnerController@destroyShowroom')->name('owner.showrooms.destroy');
@@ -116,6 +114,7 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
 
   //input accountant, operator, cleaner
   Route::get('employees', 'ManagerController@indexEmployee')->name('manager.employees.index');
+  Route::get('employees/{id}/show', 'ManagerController@showEmployee')->name('manager.employees.show');
 
   Route::get('employees/create', 'ManagerController@createEmployee')->name('manager.employees.create');
   Route::post('employees/store', 'ManagerController@storeEmployee')->name('manager.employees.store');
@@ -128,6 +127,7 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
     //aturan tarif, gaji, insentif
       // /pricings /pricings/create /pricings/{id} /pricings/{id}/edit
   Route::get('pricings', 'ManagerController@indexPricing')->name('manager.pricings.index');
+  Route::get('pricings/{id}/show', 'ManagerController@showPricing')->name('manager.pricings.show');
 
   Route::get('pricings/create', 'ManagerController@createPricing')->name('manager.pricings.create');
   Route::post('pricings/store', 'ManagerController@storePricing')->name('manager.pricings.store');
@@ -144,6 +144,7 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
 
   // pindahan dari operator
   Route::get('materials', 'ManagerController@materialsIndex')->name('manager.materials.index');
+  Route::get('materials/{id}/show', 'ManagerController@materialsShow')->name('manager.materials.show');
   Route::get('materials/create', 'ManagerController@materialsCreate')->name('manager.materials.create');
   Route::post('materials/store', 'ManagerController@materialsStore')->name('manager.materials.store');
   Route::get('materials/{id}/edit', 'ManagerController@materialsEdit')->name('manager.materials.edit');
@@ -155,6 +156,7 @@ Route::group(['middleware' => ['auth', 'role:manager']], function () {
   Route::get('materials/{id}/destroy', 'ManagerController@materialsDestroy')->name('manager.materials.destroy');
 
   Route::get('assets', 'ManagerController@assetsIndex')->name('manager.assets.index');
+  Route::get('assets/{id}/show', 'ManagerController@assetsShow')->name('manager.assets.show');
   Route::get('assets/create', 'ManagerController@assetsCreate')->name('manager.assets.create');
   Route::post('assets/store', 'ManagerController@assetsStore')->name('manager.assets.store');
   Route::get('assets/{id}/edit', 'ManagerController@assetsEdit')->name('manager.assets.edit');
@@ -184,6 +186,7 @@ Route::group(['middleware' => ['auth', 'role:operator']], function () {
   Route::get('terimaPelanggan', 'OperatorController@terimaPelanggan')->name('operator.terimaPelanggan');
   Route::post('clientStore', 'OperatorController@clientStore')->name('operator.clientStore');
   Route::get('antrian', 'OperatorController@antrian')->name('operator.antrian');
+  Route::get('antrian/{id}/show', 'OperatorController@antrianShow')->name('operator.antrian.show');
   // Route::get('layarAntrian', 'OperatorController@layarAntrian')->name('operator.layarAntrian');
   Route::get('updateStatus', 'OperatorController@updateStatus')->name('operator.updateStatus');
 
@@ -196,6 +199,7 @@ Route::group(['middleware' => ['auth','role:cashier']], function () {
 
   //pindahan dari operator
   Route::get('antrianKasir', 'CashierController@antrian')->name('cashier.antrian');
+  Route::get('antrianKasir/{id}/show', 'CashierController@antrianShow')->name('cashier.antrian.show');
   //list transaction in out
   Route::get('transactions', 'CashierController@index')->name('cashier.index');
   Route::get('transactions/{id}/show', 'CashierController@show')->name('cashier.show');

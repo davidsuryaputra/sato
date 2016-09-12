@@ -209,7 +209,9 @@
                 <tbody>
                   <tr>
                     <td colspan="4" align="right"><b>Total yang harus dibayar</b></td>
-                    <td align="center" class="grand-total"><b>0</b></td>
+                    <td align="center" class="grand-total">
+                      <b>0</b>
+                    </td>
                   </tr>
                 </tbody>
               </table>

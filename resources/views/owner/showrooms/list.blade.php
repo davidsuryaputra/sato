@@ -9,7 +9,7 @@
 
      <div id="pages_maincontent">
 
-              <h2 class="page_title">Tables</h2>
+              <h2 class="page_title">Semua Showroom</h2>
 
               <div class="page_content">
 

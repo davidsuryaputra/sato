@@ -9,7 +9,7 @@
      </div>
      <div id="pages_maincontent">
 
-              <h2 class="page_title">Custom form inputs</h2>
+              <h2 class="page_title">Keterangan Showroom</h2>
 
               <div class="page_content">
 
@@ -28,8 +28,9 @@
                 <p>{{ $showroom->phone }}</p>
 
                 <label>Pilihan</label>
-                <a href="{{ route('owner.showrooms.destroy', $showroom->id) }}" role="button" class="btn btn-danger">Delete</a>
-                <a href="{{ route('owner.showrooms.edit', $showroom->id) }}" role="button" class="btn btn-warning">Edit</a>
+                <a href="{{ route('owner.showrooms.destroy', $showroom->id) }}" role="button" class="external button button-fill color-red">Delete</a>
+                <br />
+                <a href="{{ route('owner.showrooms.edit', $showroom->id) }}" role="button" class="button button-fill color-red">Edit</a>
                 <!-- <input type="submit" name="submit" class="form_submit" id="submit" value="Send" /> -->
                 </div>
 
