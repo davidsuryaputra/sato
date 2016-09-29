@@ -1046,6 +1046,11 @@ margin:0 0 0 10%;
   width: 50%;
   float: left;
   margin: 0 0 0 5%;
+  display: flex;
+}
+.tombol{
+  /*padding: 0px 50px 0px 50px;*/
+  margin: 0% 10% 0% 0%;
 }
 .post_title h2{
 font-size:24px;

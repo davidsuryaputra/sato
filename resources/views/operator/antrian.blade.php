@@ -23,15 +23,36 @@
                             <span class="day">#{{ $queue->id}}</span>
                           </div>
                           <div class="post_title">
-                          <h2><a href="{{ route('operator.antrian.show', $queue->id )}}">{{ $queue->no_kendaraan }}</a></h2>
+                          <h2>{{ $queue->no_kendaraan }}</h2>
                           </div>
-                          <!--
+
                           <div class="buttons_container">
-                            <a href="#" class="button button-fill color-green" style="width:15%;">Tes A</a>
-                            <a href="#" class="button button-fill color-yellow" style="width:15%;">Tes B</a>
-                            <a href="#" class="button button-fill color-purple" style="width:15%">Tes C</a>
+                            <!--
+                            <a href="#" class="button button-fill color-green tombol">Proses Cuci</a>
+                            <a href="#" class="button button-fill color-yellow tombol">Pengeringan</a>
+                            <a href="#" class="button button-fill color-purple tombol">Selesai</a>
+                          -->
+                          @if($queue->status == 'Menunggu')
+                            <a href="#" onclick="dicuci({{ $queue->id }}, 'Dicuci')" id="Dicuci{{ $queue->id }}" role="button" class="button button-fill color-blue tombol">Proses Cuci</a>
+                            <br />
+                            <a href="#" onclick="pengeringan({{ $queue->id }}, 'Pengeringan')" id="Pengeringan{{ $queue->id }}" role="button" class="button button-fill color-blue tombol disabled">Pengeringan</a>
+                            <br />
+                            <a href="#" onclick="selesai({{ $queue->id }}, 'Selesai')" id="Selesai{{ $queue->id }}" role="button" class="button button-fill color-blue tombol disabled">Selesai</a>
+                            <br />
+                            <!-- <a href="#" onclick="kasir({{ $queue->id }}, 'Kasir')" id="Kasir{{ $queue->id }}" role="button" class="button button-fill color-green disabled"><i class="fa fa-money"></i> Kasir</a> -->
+                          @elseif($queue->status == 'Dicuci')
+                          <a href="#" onclick="pengeringan({{ $queue->id }}, 'Pengeringan')" id="Pengeringan{{ $queue->id }}" role="button" class="button button-fill color-blue tombol">Pengeringan</a>
+                          <br />
+                          <a href="#" onclick="selesai({{ $queue->id }}, 'Selesai')" id="Selesai{{ $queue->id }}" role="button" class="button button-fill color-blue tombol disabled">Selesai</a>
+                          <br />
+                          <!-- <a href="#" onclick="kasir({{ $queue->id }}, 'Kasir')" id="Kasir{{ $queue->id }}" role="button" class="button button-fill color-green disabled"><i class="fa fa-money"></i> Kasir</a> -->
+                          @elseif($queue->status == 'Pengeringan')
+                            <a href="#" onclick="selesai({{ $queue->id }}, 'Selesai')" id="Selesai{{ $queue->id }}" role="button" class="button button-fill color-blue tombol">Selesai</a>
+                            <br />
+                            <!-- <a href="#" onclick="kasir({{ $queue->id }}, 'Kasir')" id="Kasir{{ $queue->id }}" role="button" class="button button-fill color-green disabled"><i class="fa fa-money"></i> Kasir</a> -->
+                          @endif
                           </div>
-                        -->
+
                       </div>
                   </li>
                   @endforeach
