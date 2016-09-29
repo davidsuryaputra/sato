@@ -9,7 +9,11 @@
         "laravelcollective/html": "5.2.*",
         "laravel/framework": "5.2.*",
         "barryvdh/laravel-dompdf": "^0.7.0",
-        "vinkla/pusher": "^2.3"
+        "vinkla/pusher": "^2.3",
+        "h4cc/wkhtmltopdf-amd64": "0.12.x",
+        "h4cc/wkhtmltoimage-amd64": "0.12.x",
+        "knplabs/knp-snappy": "^0.4.3",
+        "barryvdh/laravel-snappy": "^0.3.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

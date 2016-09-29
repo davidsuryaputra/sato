@@ -1,40 +1,121 @@
-<div class="pages">
-  <div data-page="projects" class="page no-toolbar no-navbar">
-    <div class="page-content">
+@extends('manager.menu')
 
-     <div class="navbarpages">
-       <!-- <div class="nav_left_logo"><a href="index.html"><img src="mobix/images/logo.png" alt="" title="" /></a></div> -->
-       <div class="nav_right_button"><a href="{{ url('home') }}"><img src="mobix/images/icons/white/menu.png" alt="" title="" /></a></div>
-     </div>
+@section('style')
+  @parent
+  <!-- DataTables -->
+ <link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css') }}">
+@stop
 
-     <div id="pages_maincontent">
+@section('script')
+  @parent
+  <!-- DataTables -->
+  <script src="{{ url('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 
-              <h2 class="page_title">Semua Aktiva Tetap</h2>
+  <script>
+  $(function () {
+    $('#assets').DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": true
+    });
+  });
+</script>
+@stop
 
-              <div class="page_content">
+@section('content')
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      {{ $showroomName }}
+      <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Beranda</li>
+    </ol>
+  </section>
 
-                <div class="blog-posts">
+  @if($showroomName != "Belum Ada Izin")
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+          <div class="col-xs-12">
+            <div class="box">
+              <div class="box-header">
+                <h3 class="box-title">Semua Aktiva Tetap</h3>
+                <a class="btn btn-primary" href="{{ route('manager.assets.create') }}" role="button">Add New</a>
+                <div class="box-tools">
+                  {{--
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
 
-                <ul class="posts">
-                  @foreach($assets as $asset)
-                  <li>
-                      <div class="post_entry">
-                          <div class="post_title">
-                          <h2><a href="{{ route('manager.assets.show', $asset->id )}}">{{ $asset->name }}</a></h2>
-                          </div>
-                      </div>
-                  </li>
-                  @endforeach
-                </ul>
-
-                <div class="clear"></div>
-                <div id="loadMore"><a href="{{ route('manager.assets.create') }}"><img src="mobix/images/load_posts.png" alt="" title="" /></a></div>
-
+                    <div class="input-group-btn">
+                      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                  </div>
+                  --}}
                 </div>
               </div>
-      </div>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive no-padding">
 
 
-    </div>
-  </div>
+                <table id="assets" class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Nama</th>
+                    <th>Harga Pembelian</th>
+                    <th>Jumlah</th>
+                    <th>Pilihan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($assets as $asset)
+                  <tr>
+                    <td>{{ $asset->name }}</td>
+                    <td>{{ $asset->value }}</td>
+                    <td>{{ $asset->stock }}</td>
+                    <td>
+                      <a href="{{ route('manager.assets.edit', $asset->id) }}" role="button" class="btn btn-info">Edit</a>
+                      <a href="{{ route('manager.assets.stock', $asset->id) }}" role="button" class="btn btn-warning">Tambah</a>
+                      <a href="{{ route('manager.assets.destroy', $asset->id) }}" role="button" class="btn btn-danger">Delete</a>
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+                </table>
+
+              </div>
+              <!-- /.box-body -->
+              {{--
+              <div class="box-footer clearfix">
+                <ul class="pagination pagination-sm no-margin pull-right">
+                  <li><a href="#">«</a></li>
+                  <li><a href="#">1</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">»</a></li>
+                </ul>
+              </div>
+              --}}
+            </div>
+            <!-- /.box -->
+          </div>
+        </div>
+  </section>
+
+  <!-- /.content -->
+  @else
+  <section class="content">
+    Silahkan Hubungi Manager
+  </section>
+  @endif
+
 </div>
+
+@endsection

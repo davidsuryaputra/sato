@@ -85,14 +85,9 @@ class OperatorController extends Controller
     public function terimaPelanggan()
     {
 
-      if(isset(Auth::user()->showroom->name))
-      {
-        $showroomName = Auth::user()->showroom->name;
-      }else{
-        $showroomName = "Belum Ada Izin";
-      }
+      $showroomName = User::getShowroom('name');
 
-      $pricings = Item::where('item_category_id', 3)->get();
+      $pricings = Item::where('item_category_id', 2)->get();
 
       // return view('operator.client.create', compact('showroomName'));
       return view('operator.terimaPelanggan', compact('showroomName', 'pricings'));
@@ -144,7 +139,8 @@ class OperatorController extends Controller
           // $queues = Queue::whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
 
           // return redirect()->route('operator.antrian');
-          $url = route('home').'#!/'.route('operator.antrian');
+          // $url = route('home').'#!/'.route('operator.antrian');
+          $url = route('home').'#!/'.route('operator.clientStoreSuccess');
           return redirect($url);
 
         }else{
@@ -185,7 +181,8 @@ class OperatorController extends Controller
           // $queues = Queue::whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
 
           // return redirect()->route('operator.antrian');
-          $url = route('home').'#!/'.route('operator.antrian');
+          // $url = route('home').'#!/'.route('operator.antrian');
+          $url = route('home').'#!/'.route('operator.clientStoreSuccess');
           return redirect($url);
 
         }
@@ -194,6 +191,10 @@ class OperatorController extends Controller
 
     }
 
+    public function clientStoreSuccess()
+    {
+      return view('operator.clientStoreSuccess');
+    }
 
     public function antrian(){
 
@@ -203,7 +204,7 @@ class OperatorController extends Controller
         $showroomName = "Belum Ada Izin";
       }
 
-      $queues = Queue::where('showroom_id', Auth::user()->showroom->id)->whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan', 'Selesai'])->get();
+      $queues = Queue::where('showroom_id', Auth::user()->showroom->id)->whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
 
       return view('operator.antrian', compact('showroomName', 'queues'));
     }

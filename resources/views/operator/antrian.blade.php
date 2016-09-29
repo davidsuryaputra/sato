@@ -25,6 +25,13 @@
                           <div class="post_title">
                           <h2><a href="{{ route('operator.antrian.show', $queue->id )}}">{{ $queue->no_kendaraan }}</a></h2>
                           </div>
+                          <!--
+                          <div class="buttons_container">
+                            <a href="#" class="button button-fill color-green" style="width:15%;">Tes A</a>
+                            <a href="#" class="button button-fill color-yellow" style="width:15%;">Tes B</a>
+                            <a href="#" class="button button-fill color-purple" style="width:15%">Tes C</a>
+                          </div>
+                        -->
                       </div>
                   </li>
                   @endforeach

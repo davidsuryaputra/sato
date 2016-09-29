@@ -95,6 +95,7 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         ),
         'B' => 
         array (
+            'Barryvdh\\Snappy\\' => 16,
             'Barryvdh\\DomPDF\\' => 16,
         ),
         'A' => 
@@ -242,6 +243,10 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
         ),
+        'Barryvdh\\Snappy\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-snappy/src',
+        ),
         'Barryvdh\\DomPDF\\' => 
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
@@ -276,6 +281,13 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
             'Mockery' => 
             array (
                 0 => __DIR__ . '/..' . '/mockery/mockery/library',
+            ),
+        ),
+        'K' => 
+        array (
+            'Knp\\Snappy' => 
+            array (
+                0 => __DIR__ . '/..' . '/knplabs/knp-snappy/src',
             ),
         ),
         'J' => 
@@ -328,6 +340,7 @@ class ComposerStaticInit85cfdc5b2e33c036fb16b7a3d62fee2e
         'CreateQueuesTable' => __DIR__ . '/../..' . '/database/migrations/2016_07_30_104617_create_queues_table.php',
         'CreateRolesTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_10_145637_create_roles_table.php',
         'CreateSalaryTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_16_085806_create_salary_table.php',
+        'CreateSessionsTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_29_121828_create_sessions_table.php',
         'CreateShowroomsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_184817_create_showrooms_table.php',
         'CreateTransactionDetailsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_203637_create_transaction_details_table.php',
         'CreateTransactionsTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_11_203617_create_transactions_table.php',

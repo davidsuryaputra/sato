@@ -19,6 +19,7 @@ class CreateShowroomsTable extends Migration
             $table->string('city');
             $table->string('phone');
             $table->integer('balance');
+            $table->string('logo');
             $table->softDeletes();
             $table->timestamps();
         });

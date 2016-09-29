@@ -51,4 +51,15 @@
  </div>
 <?php $__env->stopSection(); ?>
 
+<?php $__env->startSection('anu'); ?>
+<div class="pages toolbar-through">
+
+  <div data-page="index" class="page homepage">
+    <div class="page-content">
+  <div class="logo"><img src="<?php echo e(url('mobix/images/logo.png')); ?>" alt="" title="" /></div>
+    </div>
+  </div>
+</div>
+<?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.mobix', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

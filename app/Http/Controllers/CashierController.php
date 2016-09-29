@@ -10,10 +10,12 @@ use App\TransactionDetail;
 use App\Item;
 use App\ItemCategory;
 use App\User;
+use App\Showroom;
 use App\Queue;
 use Validator;
 use LaravelPusher;
 use Auth, Response, Session;
+use SnappyPDF;
 
 class CashierController extends Controller
 {
@@ -26,7 +28,7 @@ class CashierController extends Controller
       $showroomName = "Belum Ada Izin";
     }
 
-    $queues = Queue::where('showroom_id', Auth::user()->showroom->id)->where('status', 'Kasir')->get();
+    $queues = Queue::where('showroom_id', Auth::user()->showroom->id)->where('status', 'Selesai')->get();
 
     return view('cashier.antrian', compact('showroomName', 'queues'));
   }
@@ -77,12 +79,29 @@ class CashierController extends Controller
   {
 
     $transaction = Transaction::find($id);
-
+    $showroom = Showroom::where('id', $transaction->showroom_id)->first();
     $transactionDetails = TransactionDetail::where('transaction_id', $id)->get();
 
-    $pdf = \App::make('dompdf.wrapper');
-    $pdf->loadView('cashier.transaction.export', compact('transaction', 'transactionDetails'));
-    return $pdf->stream();
+
+    $pdf = SnappyPDF::loadView('cashier.transaction.export', compact('transaction', 'transactionDetails', 'showroom'));
+    $pdf->setPaper('a4');
+    return $pdf->inline();
+    // return $pdf->download('invoice.pdf');
+    /*
+    $pdf = App::make('snappy.pdf.wrapper');
+    $pdf->loadHTML('<h1>Test</h1>');
+    */
+    // $pdf = \App::make('dompdf.wrapper');
+    // $pdf->loadView('cashier.transaction.export', compact('transaction', 'transactionDetails', 'showroom'));
+    // $pdf->loadHTML('<h1>tes</h1>');
+    // $pdf->setPaper('a4', 'potrait');
+    // $pdf->setWarnings(true);
+    // return $pdf->stream();
+
+    // return $pdf->download('x.pdf');
+
+    // return 'hello';
+    // return View('cashier.transaction.export', compact('transaction', 'transactionDetails', 'showroom'));
 
   }
 
@@ -115,6 +134,11 @@ class CashierController extends Controller
       {
         // $customer_name = User::find($request->customer_id)->where('role_id', 5)->first();
         Session::put('customer_name', $queue->customer->name);
+      }
+
+      if(is_null(Session::get('no_kendaraan')))
+      {
+        Session::put('no_kendaraan', $queue->no_kendaraan);
       }
 
       //ubah db queue jenis ke item_id ubah inputnya juga
@@ -167,6 +191,11 @@ class CashierController extends Controller
       $customer_name = Session::get('customer_name');
     }
 
+    if(Session::has('no_kendaraan'))
+    {
+      $no_kendaraan = Session::get('no_kendaraan');
+    }
+
     $showroom_id = Auth::user()->showroom_id;
     $operator_id = Auth::user()->id;
 
@@ -187,6 +216,7 @@ class CashierController extends Controller
       'showroom_id' => $showroom_id,
       'customer_id' => $customer_id,
       'operator_id' => $operator_id,
+      'description' => $no_kendaraan,
       'total' => $total,
     ];
 
@@ -211,6 +241,7 @@ class CashierController extends Controller
     Session::forget('items');
     Session::forget('customer_id');
     Session::forget('customer_name');
+    Session::forget('no_kendaraan');
     Session::forget('queue_id');
     Session::forget('grandTotal');
 
@@ -238,7 +269,7 @@ class CashierController extends Controller
   {
     $results = array();
     $term = $request->term;
-    $items = Item::whereIn('item_category_id', [1, 3])
+    $items = Item::whereNotIn('item_category_id', [1])
               ->where('name', 'LIKE', "%$term%")
               ->orWhere('id', 'LIKE', "%$term%")
               ->get();

@@ -12,6 +12,7 @@ use App\Item;
 use App\ItemCategory;
 use Auth;
 use Validator;
+use Session;
 
 class ManagerController extends Controller
 {
@@ -188,6 +189,7 @@ class ManagerController extends Controller
         return redirect($url);
     }
 
+/*
     public function indexPricing()
     {
         $pricings = Item::where('showroom_id', '=', Auth::user()->showroom_id)
@@ -354,14 +356,14 @@ class ManagerController extends Controller
               $material->name = $request->name;
               $material->value  = $request->value;
               $material->stock = $request->quantity;
-              /*
-              $material->transaction_category = $request->transaction;
-              if($request->transaction == 1){
-                $material->stocks = $lastStock + $request->quantity;
-              }else{
-                $material->stocks = $lastStock - $request->quantity;
-              }
-              */
+
+              //$material->transaction_category = $request->transaction;
+              //if($request->transaction == 1){
+              //  $material->stocks = $lastStock + $request->quantity;
+              //}else{
+              //  $material->stocks = $lastStock - $request->quantity;
+              //}
+
               $material->save();
 
               $url = route('home').'#!/'.route('manager.materials.index');
@@ -444,15 +446,15 @@ class ManagerController extends Controller
         $material->item_category_id = 1;
         $material->name = $request->name;
         $material->value  = $request->value;
-        /*
+
         // $material->quantity = $request->quantity;
-        if($request->transaction_category == 1){
-          $material->stocks = $lastStock + $request->quantity;
-        }else{
-          $material->stocks = $lastStock - $request->quantity;
-        }
-        $material->transaction_category = $request->transaction_category;
-        */
+        //if($request->transaction_category == 1){
+        //  $material->stocks = $lastStock + $request->quantity;
+        //}else{
+        //  $material->stocks = $lastStock - $request->quantity;
+        //}
+        //$material->transaction_category = $request->transaction_category;
+
         $material->save();
 
         // return redirect()->route('home');
@@ -474,17 +476,13 @@ class ManagerController extends Controller
       $url = route('home').'#!/'.route('manager.materials.index');
       return redirect($url);
     }
-
+*/
 
     public function assetsIndex()
     {
-      if(isset(Auth::user()->showroom->name)){
-        $showroomName = Auth::user()->showroom->name;
-      }else{
-        $showroomName = "Belum Ada Izin";
-      }
-      $itemCategory = ItemCategory::where('name', 'asset')->first();
-      $assets = $itemCategory->assets;
+      $showroomName = User::getShowroom('name');
+      //$itemCategory = ItemCategory::where('name', 'asset')->get();
+      $assets = Item::assets()->get();
       return view('manager.assets.index', compact('assets', 'showroomName'));
     }
 
@@ -515,8 +513,8 @@ class ManagerController extends Controller
 
       if($validator->fails())
       {
-        $url = route('home').'#!/'.route('manager.assets.create');
-        return redirect($url)->withInput()->withErrors($validator);
+        // $url = route('home').'#!/'.route('manager.assets.create');
+        return back()->withInput()->withErrors($validator);
       }else{
 
               //updateOrCreate
@@ -538,10 +536,10 @@ class ManagerController extends Controller
 
               $asset = Item::firstOrNew([
                 'name' => $request->name,
-                'item_category_id' => 2,
+                'item_category_id' => 1,
               ]);
               $asset->showroom_id = Auth::user()->showroom_id;
-              $asset->item_category_id = 2;
+              $asset->item_category_id = 1;
               $asset->name = $request->name;
               $asset->value  = $request->value;
               $asset->stock = $request->quantity;
@@ -558,8 +556,8 @@ class ManagerController extends Controller
 
               // return redirect()->route('home');
               // return redirect()->route('manager.assets.index');
-              $url = route('home').'#!/'.route('manager.assets.index');
-              return redirect($url);
+              // $url = route('home').'#!/'.route('manager.assets.index');
+              return redirect()->route('manager.assets.index');
       }
 
 
@@ -568,24 +566,25 @@ class ManagerController extends Controller
 
     public function assetsEdit($id)
     {
+      $showroomName = User::getShowroom('name');
       $asset = Item::findOrFail($id);
-      return view('manager.assets.edit', compact('asset'));
+      return view('manager.assets.edit', compact('asset', 'showroomName'));
 
     }
 
     public function assetsUpdate(Request $request, $id)
     {
       $validator = Validator::make($request->all(), [
-        'name' => 'required|alpha|unique:items',
-        'quantity' => 'required|numeric|min:1',
+        'name' => 'required|unique:items',
+        // 'quantity' => 'required|numeric|min:1',
         'value' =>  'required|numeric',
-        'stock' => 'required|numeric',
+        // 'stock' => 'required|numeric',
         // 'transaction_category' => 'required|numeric',
       ]);
 
       if($validator->fails()){
-        $url = route('home').'#!/'.route('manager.assets.edit', $id);
-        return redirect($url)->withInput()->withErrors($validator);
+        // $url = route('home').'#!/'.route('manager.assets.edit', $id);
+        return back()->withInput()->withErrors($validator);
       }else{
         //find
         //get last stock item
@@ -596,10 +595,10 @@ class ManagerController extends Controller
 
         $asset = Item::find($id);
         $asset->showroom_id = Auth::user()->showroom_id;
-        $asset->item_category_id = 2;
+        $asset->item_category_id = 1;
         $asset->name = $request->name;
         // $asset->quantity = $request->quantity;
-        $asset->stocks = $lastStock;
+        // $asset->stocks = $lastStock;
         $asset->value  = $request->value;
         /*
         if($request->transaction_category == 1){
@@ -613,8 +612,8 @@ class ManagerController extends Controller
 
         // return redirect()->route('home');
         // return redirect()->route('manager.assets.index');
-        $url = route('home').'#!/'.route('manager.assets.index');
-        return redirect($url);
+        // $url = route('home').'#!/'.route('manager.assets.index');
+        return redirect()->route('manager.assets.index');
       }
 
 
@@ -638,8 +637,8 @@ class ManagerController extends Controller
       ]);
 
       if($validator->fails()){
-        $url = route('home').'#!/'.route('manager.assets.stock', $id);
-        return redirect($url)->withInput()->withErrors($validator);
+        // $url = route('home').'#!/'.route('manager.assets.stock', $id);
+        return back()->withInput()->withErrors($validator);
       }else{
         $lastStock = Item::where('id', $request->id)
           ->first(['stock']);
@@ -650,8 +649,8 @@ class ManagerController extends Controller
 
         // return redirect()->route('home');
         // return redirect()->route('manager.assets.index');
-        $url = route('home').'#!/'.route('manager.assets.index');
-        return redirect($url);
+        // $url = route('home').'#!/'.route('manager.assets.index');
+        return redirect()->route('manager.assets.index');
       }
 
 
@@ -664,8 +663,218 @@ class ManagerController extends Controller
 
       // return redirect()->route('manager.assets.index');
       // return redirect()->route('home');
-      $url = route('home').'#!/'.route('manager.assets.index');
-      return redirect($url);
+      // $url = route('home').'#!/'.route('manager.assets.index');
+      return redirect()->route('manager.assets.index');
     }
     //end pindahan operator
+
+    //Services
+    public function servicesIndex()
+    {
+      $showroomName = User::getShowroom('name');
+      $services = Item::services()->get();
+      return view('manager.services.index', compact('services', 'showroomName'));
+    }
+
+    public function servicesCreate()
+    {
+      $showroomName = User::getShowroom('name');
+      $servicesCategory = ItemCategory::services()->get();
+      return view('manager.services.create', compact('servicesCategory', 'showroomName'));
+    }
+
+    public function servicesStore(Request $request)
+    {
+      $validator = Validator::make($request->all(), [
+        'name' => 'required',
+        'stockable' => 'required',
+        // 'stock' => 'required',
+        'value' => 'required',
+        'serviceCategory' => 'required|numeric',
+      ]);
+
+      if($validator->fails()){
+        return back()->withInput()->withErrors($validator);
+      }else{
+
+        $item = new Item;
+        $item->name = $request->name;
+        $item->stockable = $request->stockable;
+        if($request->stockable != 0){
+          $item->stock = $request->stock;
+        }
+        $item->value = $request->value;
+        $item->item_category_id = $request->serviceCategory;
+        $item->showroom_id = User::getShowroom('id');
+        $item->save();
+
+        return redirect()->route('manager.services.index');
+      }
+    }
+
+    public function servicesEdit($id)
+    {
+      $service = Item::currentShowroom()->services()->itemId($id)->first();
+      $showroomName = User::getShowroom('name');
+      return view('manager.services.edit', compact('service', 'showroomName'));
+    }
+
+    public function servicesUpdate(Request $request, $id)
+    {
+      $validator = Validator::make($request->all(), [
+        'name' => 'required',
+        // 'stock' => 'required',
+        'value' => 'required',
+      ]);
+
+      if($validator->fails()){
+        return back()->withInput()->withErrors($validator);
+      }else{
+        $service = Item::currentShowroom()->services()->itemId($id)->first();
+        $service->name = $request->name;
+        $service->value = $request->value;
+        $service->save();
+        return redirect()->route('manager.services.index');
+      }
+    }
+
+    public function servicesDestroy($id)
+    {
+      if(Item::currentShowroom()->services()->itemId($id)->delete()){
+        return redirect()->route('manager.services.index');
+      }else{
+        echo "Something Wrong";
+      }
+    }
+
+    public function servicesStock($id)
+    {
+      $service = Item::currentShowroom()->services()->itemId($id)->first();
+      $showroomName = User::getShowroom('name');
+      return view('manager.services.stock', compact('service', 'showroomName'));
+    }
+
+    public function servicesUpdateStock(Request $request, $id)
+    {
+      $validator = Validator::make($request->all(), [
+        'stock' => 'required',
+      ]);
+
+      if($validator->fails()){
+        return back()->withInput()->withErrors($validator);
+      }else{
+        $lastStock = Item::currentShowroom()->services()->itemId($id)->first(['stock']);
+        $service = Item::currentShowroom()->services()->itemId($id)->first();
+        $service->stock = $lastStock->stock + $request->stock;
+        $service->save();
+        return redirect()->route('manager.services.index');
+      }
+    }
+
+    public function servicesCategoryIndex()
+    {
+      $showroomName = User::getShowroom('name');
+      $servicesCategory = ItemCategory::services()->get();
+      return view('manager.services.category.index', compact('servicesCategory', 'showroomName'));
+    }
+
+    public function servicesCategoryCreate()
+    {
+      $showroomName = User::getShowroom('name');
+      return view('manager.services.category.create', compact('showroomName'));
+    }
+
+    public function servicesCategoryStore(Request $request)
+    {
+      $validator =  Validator::make($request->all(),
+      [
+        'name' => 'required',
+      ]);
+
+      if($validator->fails()){
+        return back()->withInput()->withErrors($validator);
+      }else{
+        $serviceCategory = new ItemCategory;
+        $serviceCategory->name = $request->name;
+        $serviceCategory->save();
+        return redirect()->route('manager.servicesCategory.index');
+      }
+    }
+
+    public function servicesCategoryEdit($id)
+    {
+      $showroomName = User::getShowroom('name');
+      $serviceCategory = ItemCategory::services()->where('id', $id)->first();
+      return view('manager.services.category.edit', compact('showroomName', 'serviceCategory'));
+    }
+
+    public function servicesCategoryUpdate(Request $request, $id)
+    {
+      $validator = Validator::make($request->all(), [
+        'name' => 'required',
+      ]);
+
+      if($validator->fails()){
+        return back()->withInput()->withErrors($validator);
+      }else{
+        $serviceCategory = ItemCategory::services()->where('id', $id)->first();
+        $serviceCategory->name = $request->name;
+        $serviceCategory->save();
+        return redirect()->route('manager.servicesCategory.index');
+      }
+    }
+
+    public function servicesCategoryDestroy($id)
+    {
+      $serviceCategory = ItemCategory::services()->where('id', $id)->delete();
+      return redirect()->route('manager.servicesCategory.index');
+    }
+
+    public function profileIndex()
+    {
+      $showroomName = User::getShowroom('name');
+      // $showroomId = User::
+      return view('manager.profile.index', compact('showroomName'));
+    }
+
+    public function profileCreate()
+    {
+
+    }
+
+    public function profileStore(Request $request, $id)
+    {
+      $validator = Validator::make($request->all(), [
+        'logo' => 'required|image',
+      ]);
+
+      if($validator->fails()){
+        return back()->withErrors($validator);
+      }else{
+        if($request->file('logo')->isValid()){
+          $dest = 'uploads/';
+          $ext = $request->file('logo')->getClientOriginalExtension();
+          $filename = rand(11111,99999).'.'.$ext;
+          $pathToFile = $dest . $filename;
+          $request->file('logo')->move($dest, $filename);
+          $showroom = Showroom::find($id);
+          $showroom->logo = $pathToFile;
+          $showroom->save();
+
+          return redirect()->route('manager.profile.index');
+        }
+      }
+    }
+
+    public function profileEdit()
+    {
+
+    }
+
+    public function profileUpdate()
+    {
+
+    }
+
+
 }

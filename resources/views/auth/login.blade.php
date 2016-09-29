@@ -51,3 +51,14 @@
  </div>
  </div>
 @endsection
+
+@section('anu')
+<div class="pages toolbar-through">
+
+  <div data-page="index" class="page homepage">
+    <div class="page-content">
+  <div class="logo"><img src="{{ url('mobix/images/logo.png') }}" alt="" title="" /></div>
+    </div>
+  </div>
+</div>
+@endsection

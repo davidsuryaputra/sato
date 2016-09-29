@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Item extends Model
 {
@@ -28,5 +29,30 @@ class Item extends Model
     public function queues()
     {
       return $this->hasMany(Queue::class);
+    }
+
+    public function scopeServices($query)
+    {
+      return $query->whereNotIn('item_category_id', [1]);
+    }
+
+    public function scopeStockable($query)
+    {
+      return $query->where('stockable', 1);
+    }
+
+    public function scopeAssets($query)
+    {
+      return $query->where('item_category_id', 1);
+    }
+
+    public function scopeCurrentShowroom($query)
+    {
+      return $query->where('showroom_id', Auth::user()->showroom_id);
+    }
+
+    public function scopeItemId($query, $id)
+    {
+      return $query->where('id', $id);
     }
 }

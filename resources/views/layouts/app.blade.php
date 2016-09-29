@@ -6,19 +6,23 @@
   <title>Beranda @yield('title')</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+  @section('style')
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="{{ url('bootstrap/css/bootstrap.min.css') }}">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ url('bootstrap/css/font-awesome.min.css') }}">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="{{ url('bootstrap/css/ionicons.min.css') }}">
-
-  <link rel="stylesheet" href="{{ url('bootstrap/css/jquery-ui.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ url('dist/css/AdminLTE.min.css') }}">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="{{ url('dist/css/skins/_all-skins.min.css') }}">
+  <link rel="stylesheet" href="{{ url('dist/css/skins/skin-blue.min.css') }}">
+  @show
+
+  {{--
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="{{ url('bootstrap/css/ionicons.min.css') }}">
+  <link rel="stylesheet" href="{{ url('bootstrap/css/jquery-ui.css') }}">
   <!-- iCheck -->
   <link rel="stylesheet" href="{{ url('plugins/iCheck/flat/blue.css') }}">
   <!-- Morris chart -->
@@ -31,6 +35,7 @@
   <link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker-bs3.css') }}">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="{{ url('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
+  --}}
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,9 +43,6 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <style>
-  @yield('autocomplete-accountant-style')
-  </style>
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -48,7 +50,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="#" class="logo">
+    <a href="{{ url('home') }}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>SATO</b></span>
       <!-- logo for regular state and mobile devices -->
@@ -147,21 +149,26 @@
 </div>
 <!-- ./wrapper -->
 
-<script type="text/javascript" src="{{ url('mobix/js/jquery-1.10.1.min.js') }}"></script>
+@yield('autocomplete')
+
+@section('script')
 <!-- jQuery 2.2.0 -->
-<!-- <script src="{{ url('plugins/jQuery/jQuery-2.2.0.min.js') }}"></script> -->
+<script src="{{ url('plugins/jQuery/jQuery-2.2.0.min.js') }}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="{{ url('bootstrap/js/bootstrap.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url('dist/js/app.min.js') }}"></script>
+@show
+
+{{--
+<!-- <script type="text/javascript" src="{{ url('mobix/js/jquery-1.10.1.min.js') }}"></script> -->
+
 <!-- jQuery UI 1.11.4 -->
-<script src="{{ url('plugins/jQueryUI/jquery-ui.min.js') }}"></script>
+<!-- <script src="{{ url('plugins/jQueryUI/jquery-ui.min.js') }}"></script> -->
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);
 </script>
-
-@yield('autocomplete')
-
-
-<!-- Bootstrap 3.3.6 -->
-<script src="{{ url('bootstrap/js/bootstrap.min.js') }}"></script>
 <!-- Morris.js charts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="{{ url('plugins/morris/morris.min.js') }}"></script>
@@ -183,11 +190,10 @@
 <script src="{{ url('plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
 <!-- FastClick -->
 <script src="{{ url('plugins/fastclick/fastclick.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ url('dist/js/app.min.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ url('dist/js/pages/dashboard.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ url('dist/js/demo.js') }}"></script>
+--}}
 </body>
 </html>

@@ -21,4 +21,9 @@ class ItemCategory extends Model
       return $this->hasMany(Item::class);
     }
 
+    public function scopeServices($query)
+    {
+      return $query->where('id', '!=', 1);
+    }
+
 }

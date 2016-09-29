@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Showroom;
 use App\User;
+use App\Item;
+use App\Transaction;
 use Validator;
 
 class OwnerController extends Controller
@@ -18,8 +20,173 @@ class OwnerController extends Controller
      */
     public function indexShowroom()
     {
+        // $showrooms = Showroom::where('city', 'Surabaya')->get();
         $showrooms = Showroom::with('users')->get();
         return view('owner.showrooms.list')->withShowrooms($showrooms);
+    }
+
+    public function createShowroom()
+    {
+      return view('owner.showrooms.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeShowroom(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+          'name' => 'required|max:30',
+          'address' => 'required|max:100',
+          'city'  => 'required|max:20',
+          'phone' => 'required|numeric',
+          // 'balance' => 'required|digits_between:5,10',
+        ]);
+
+        if($validator->fails()){
+
+          // $url = route('home').'#!/'.route('owner.showrooms.create');
+          return back()->withInput()->withErrors($validator);
+
+        }else{
+
+        $data = $request->all();
+        Showroom::create($data);
+        // return redirect()->route('home');
+        // $url = route('home').'#!/'.route('owner.showrooms');
+        // return redirect($url)->withInput()->withErrors($validator);
+        return redirect()->route('owner.showrooms');
+        }
+
+    }
+
+    public function showShowroom($id)
+    {
+      $showroom = Showroom::find($id);
+      return view('owner.showrooms.show', compact('showroom'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function editShowroom($id)
+    {
+        $showroom = Showroom::findOrFail($id);
+        $managers = User::where('role_id', '=', 2)
+          ->whereNull('showroom_id')
+          ->get();
+        return view('owner.showrooms.edit', compact('showroom', 'managers'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateShowroom(Request $request, $id)
+    {
+      // dd($request->manager);
+
+      $validator = Validator::make($request->all(), [
+        'name' => 'required|max:30',
+        'address' => 'required|max:100',
+        'city'  => 'required|max:20',
+        'phone' => 'required|numeric',
+        // 'balance' => 'required|digits_between:5,10',
+        'manager' => 'numeric',
+      ]);
+
+      if($validator->fails()){
+
+        // $url = route('home').'#!/'.route('owner.showrooms.edit', $id);
+        return back()->withInput()->withErrors($validator);
+
+      }else{
+
+        $showroom = Showroom::find($id);
+
+        if(is_numeric($request->manager)){
+        $manager = User::find($request->manager);
+        $manager->showroom()->associate($showroom);
+        $manager->save();
+        }
+
+        $showroom->name = $request->name;
+        $showroom->address = $request->address;
+        $showroom->city = $request->city;
+        $showroom->phone = $request->phone;
+        $showroom->balance = $request->balance;
+        $showroom->save();
+
+        // $url = route('home').'#!/'.route('owner.showrooms');
+        // return redirect($url);
+        return redirect()->route('owner.showrooms');
+      }
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyShowroom($id)
+    {
+        $manager = User::where('role_id', '=', 2)
+          ->where('showroom_id', '=', $id)
+          ->first();
+
+        if($manager != null)
+        {
+          $manager->showroom()->dissociate();
+          $manager->save();
+
+          $showroom = Showroom::find($id);
+          $showroom->delete();
+        }else{
+          $showroom = Showroom::find($id);
+          $showroom->delete();
+        }
+        //remove showroom from user
+        // return redirect('owner/showrooms');
+        // return redirect()->route('home');
+        // $url = route('home').'#!/'.route('owner.showrooms');
+        return redirect()->route('owner.showrooms');
+    }
+
+    public function pengeluaranShowroom($id)
+    {
+      $showroom = Showroom::where('id', $id)->first();
+      $showroomName = $showroom->name;
+
+      $pengeluaran = 0;
+      $items = Item::services()->stockable()->where('showroom_id', $id)->get();
+      foreach($items as $item){
+        $pengeluaran += $item->value * $item->stock;
+      }
+      return view('owner.showrooms.pengeluaran', compact('showroomName', 'pengeluaran'));
+    }
+
+    public function pendapatanShowroom($id)
+    {
+      $showroom = Showroom::where('id', $id)->first();
+      $showroomName = $showroom->name;
+      $pendapatan = 0;
+      $transactions = Transaction::where('showroom_id', $id)->get();
+      foreach($transactions as $transaction){
+        $pendapatan += $pendapatan + $transaction->total;
+      }
+      return view('owner.showrooms.pendapatan', compact('showroomName', 'pendapatan'));
     }
 
     public function indexManager()
@@ -49,44 +216,7 @@ class OwnerController extends Controller
         // return 'x';
     }
 
-    public function createShowroom()
-    {
-      return view('owner.showrooms.create');
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeShowroom(Request $request)
-    {
-
-        $validator = Validator::make($request->all(), [
-          'name' => 'required|max:30',
-          'address' => 'required|max:100',
-          'city'  => 'required|max:20',
-          'phone' => 'required|numeric',
-          // 'balance' => 'required|digits_between:5,10',
-        ]);
-
-        if($validator->fails()){
-
-          $url = route('home').'#!/'.route('owner.showrooms.create');
-          return redirect($url)->withInput()->withErrors($validator);
-
-        }else{
-
-        $data = $request->all();
-        Showroom::create($data);
-        // return redirect()->route('home');
-        $url = route('home').'#!/'.route('owner.showrooms');
-        return redirect($url)->withInput()->withErrors($validator);
-        }
-        // return redirect()->route('owner.showrooms');
-
-    }
 
     public function storeManager(Request $request)
     {
@@ -117,8 +247,8 @@ class OwnerController extends Controller
 
         if($validator->fails()){
 
-          $url = route('home').'#!/'.route('owner.managers.create');
-          return redirect($url)->withInput()->withErrors($validator);
+          // $url = route('home').'#!/'.route('owner.managers.create');
+          return back()->withInput()->withErrors($validator);
           // return $validator->errors();
 
         }else{
@@ -143,10 +273,10 @@ class OwnerController extends Controller
         */
 
         $manager->save();
+        return redirect()->route('owner.managers.index');
         // return redirect()->route('home');
-        // return redirect()->route('owner.managers');
-        $url = route('home').'#!/'.route('owner.managers.create');
-        return redirect($url);
+        // $url = route('home').'#!/'.route('owner.managers.create');
+        // return redirect($url);
 
       }
 
@@ -165,26 +295,7 @@ class OwnerController extends Controller
         // return "your id is $id";
     }
 
-    public function showShowroom($id)
-    {
-      $showroom = Showroom::find($id);
-      return view('owner.showrooms.show', compact('showroom'));
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function editShowroom($id)
-    {
-        $showroom = Showroom::findOrFail($id);
-        $managers = User::where('role_id', '=', 2)
-          ->whereNull('showroom_id')
-          ->get();
-        return view('owner.showrooms.edit', compact('showroom', 'managers'));
-    }
 
     public function editManager($id)
     {
@@ -199,54 +310,6 @@ class OwnerController extends Controller
         return view('owner.managers.edit', compact('manager', 'showrooms', 'showroomKosong'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function updateShowroom(Request $request, $id)
-    {
-      // dd($request->manager);
-
-      $validator = Validator::make($request->all(), [
-        'name' => 'required|max:30',
-        'address' => 'required|max:100',
-        'city'  => 'required|max:20',
-        'phone' => 'required|numeric',
-        // 'balance' => 'required|digits_between:5,10',
-        'manager' => 'numeric',
-      ]);
-
-      if($validator->fails()){
-
-        $url = route('home').'#!/'.route('owner.showrooms.edit', $id);
-        return redirect($url)->withInput()->withErrors($validator);
-
-      }else{
-
-        $showroom = Showroom::find($id);
-
-        if(is_numeric($request->manager)){
-        $manager = User::find($request->manager);
-        $manager->showroom()->associate($showroom);
-        $manager->save();
-        }
-
-        $showroom->name = $request->name;
-        $showroom->address = $request->address;
-        $showroom->city = $request->city;
-        $showroom->phone = $request->phone;
-        $showroom->balance = $request->balance;
-        $showroom->save();
-
-        $url = route('home').'#!/'.route('owner.showrooms');
-        return redirect($url);
-        // return redirect()->route('owner.showrooms');
-      }
-
-    }
 
     public function updateManager(Request $request, $id)
     {
@@ -263,49 +326,20 @@ class OwnerController extends Controller
         }
         $manager->save();
 
-        // return redirect()->route('owner.managers.index');
-        $url = route('home').'#!/'.route('owner.managers.index');
-        return redirect($url);
+        return redirect()->route('owner.managers.index');
+        // $url = route('home').'#!/'.route('owner.managers.index');
+        // return redirect($url);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroyShowroom($id)
-    {
-        $manager = User::where('role_id', '=', 2)
-          ->where('showroom_id', '=', $id)
-          ->first();
-
-        if($manager != null)
-        {
-          $manager->showroom()->dissociate();
-          $manager->save();
-
-          $showroom = Showroom::find($id);
-          $showroom->delete();
-        }else{
-          $showroom = Showroom::find($id);
-          $showroom->delete();
-        }
-        //remove showroom from user
-        // return redirect('owner/showrooms');
-        // return redirect()->route('home');
-        $url = route('home').'#!/'.route('owner.showrooms');
-        return redirect($url);
-    }
 
     public function destroyManager($id)
     {
         $manager = User::find($id);
         $manager->delete();
-        // return redirect()->route('owner.managers.index');
+        return redirect()->route('owner.managers.index');
         // return redirect()->route('home');
-        $url = route('home').'#!/'.route('owner.managers.index');
-        return redirect($url);
+        // $url = route('home').'#!/'.route('owner.managers.index');
+        // return redirect($url);
         // return $url;
     }
 }

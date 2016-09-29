@@ -1,52 +1,102 @@
-@extends('layouts.mobix')
+@extends('manager.menu')
 
-@section('title', 'Owner')
+@section('style')
+  @parent
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="{{ url('bootstrap/css/ionicons.min.css') }}">
+@stop
 
-@section('panel')
-@if(Auth::check())
-<div class="panel-overlay"></div>
+@section('content')
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      {{ $showroomName }}
+      <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Beranda</li>
+    </ol>
+  </section>
 
-<div class="panel panel-left panel-cover">
-      <div class="user_login_info">
-            <div class="user_thumb">
-            <img src="mobix/images/profile.jpg" alt="" title="" />
-              <div class="user_details">
-               <p>Hi, <span>{{ Auth::user()->name }}</span></p>
-              </div>
-              <div class="user_social">
-              <a href="#" data-popup=".popup-social" class="open-popup"><img src="mobix/images/icons/white/twitter.png" alt="" title="" /></a>              </div>
-            </div>
+  @if($showroomName != "Belum Ada Izin")
+  <!-- Main content -->
+  <section class="content">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-aqua">
+          <div class="inner">
+            <h3>150</h3>
 
-              <nav class="user-nav">
-                <ul>
-                  <li><a href="{{ url('employees') }}" class="close-panel"><i class="fa fa-users"></i>Pegawai</a></li>
-                  <li><a href="{{ url('assets')}}" class="close-panel"><i class="fa fa-user-plus"></i>Aktiva Tetap</a></li>
-                  <li><a href="{{ url('materials')}}" class="close-panel"><i class="fa fa-user-plus"></i>Persediaan</a></li>
-                  <li><a href="{{ url('pricings')}}" class="close-panel"><i class="fa fa-user-plus"></i>Tarif</a></li>
-                  <!-- <li><a href="index.html" class="close-panel"><i class="fa fa-sign-out"></i>Logout</a></li> -->
-                  <!-- <li><a href="features.html" class="close-panel"><img src="mobix/images/icons/white/briefcase.png" alt="" title="" /><span>Account</span></a></li> -->
-                  <!-- <li><a href="features.html" class="close-panel"><img src="mobix/images/icons/white/message.png" alt="" title="" /><span>Messages</span><strong class="green">12</strong></a></li> -->
-                  <!-- <li><a href="features.html" class="close-panel"><img src="mobix/images/icons/white/download.png" alt="" title="" /><span>Downloads</span><strong class="blue">5</strong></a></li> -->
-                </ul>
-              </nav>
+            <p>Transaksi masuk hari ini.</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-bag"></i>
+          </div>
+          <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
       </div>
-</div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-green">
+          <div class="inner">
+            <h3>53</h3>
 
-@endif
-@endsection
-
-@section('toolbar')
-<!-- Bottom Toolbar-->
-<div class="toolbar">
-      <div class="toolbar-inner">
-      <ul class="toolbar_icons">
-
-      <li><a href="#" data-panel="left" class="open-panel"><img src="mobix/images/icons/white/user.png" alt="" title="" /></a></li>
-      <li><a href="{{ url('logout') }}" class="external"><img src="mobix/images/icons/white/lock.png" alt="" title="" /></a></li>
-      <!-- <li><a href="blog.html"><img src="mobix/images/icons/white/blog.png" alt="" title="" /></a></li> -->
-      <!-- <li><a href="contact.html"><img src="mobix/images/icons/white/contact.png" alt="" title="" /></a></li> -->
-      </ul>
+            <p>Transaksi keluar hari ini.</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
       </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-yellow">
+          <div class="inner">
+            <h3>44</h3>
+
+            <p>Pelanggan hari ini.</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-person-add"></i>
+          </div>
+          <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-red">
+          <div class="inner">
+            <h3>65</h3>
+
+            <p>Pengunjung hari ini.</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+          </div>
+          <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+    </div>
+    <!-- /.row -->
+
+
+  </section>
+  <!-- /.content -->
+  @else
+  <section class="content">
+    Silahkan Hubungi Owner
+  </section>
+  @endif
+
 </div>
 
 @endsection

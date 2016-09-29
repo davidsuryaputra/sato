@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Auth;
 
 class User extends Authenticatable
 {
@@ -42,5 +43,14 @@ class User extends Authenticatable
 
     public function queues(){
       return $this->hasMany(Queue::class);
+    }
+
+    public function scopeGetShowroom($query, $val)
+    {
+      if($val == 'name'){
+        return data_get(Auth::user(), 'showroom.name', 'Belum Ada Izin');
+      }else{
+        return Auth::user()->showroom_id;
+      }
     }
 }

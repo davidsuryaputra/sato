@@ -160,6 +160,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Vinkla\Pusher\PusherServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
 
     ],
 
@@ -210,6 +211,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'LaravelPusher' => Vinkla\Pusher\Facades\Pusher::class,
+        'SnappyPDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
 
     ],
 

@@ -1,10 +1,4 @@
-@extends('layouts.app')
-
-@section('title', 'Cashier')
-
-@section('name', Auth::user()->name)
-
-@section('role', 'Cashier')
+@extends('cashier.menu')
 
 @section('autocomplete-accountant-style')
 .ui-autocomplete {
@@ -21,64 +15,273 @@
   }
 @endsection
 
-@section('sidebar-menu')
-<ul class="sidebar-menu">
-  <li class="header">MENU UTAMA</li>
-  <li class="active treeview">
-    <a href="{{ url('home') }}">
-      <i class="fa fa-dashboard"></i> <span>Beranda</span> <!--<i class="fa fa-angle-left pull-right"></i>-->
-    </a>
-  </li>
+@section('style')
+  @parent
+  <link rel="stylesheet" href="{{ url('bootstrap/css/jquery-ui.css') }}">
+@stop
 
-  @if($showroomName != "Belum Ada Izin")
-  <li class="treeview">
-    <a href="{{ url('transactions') }}">
-      <i class="fa fa-home"></i> <span>Semua Transaksi</span>
-    </a>
+@section('script')
+  @parent
+  <!-- jQuery UI 1.11.4 -->
+  <script src="{{ url('plugins/jQueryUI/jquery-ui.min.js') }}"></script>
+  <script type="text/javascript">
 
-    {{--
-    <ul class="treeview-menu">
-      <li>
-      <a href="{{ url('transactions') }}">
-        <i class="fa fa-home"></i> <span>Semua Transaksi</span>
-      </a>
-      </li>
+  function store()
+  {
 
-      <li>
-      <a href="{{ url('transactions/create') }}">
-        <i class="fa fa-circle-o"></i> <span>Buat Transaksi</span>
-      </a>
-      </li>
-    </ul>
-    --}}
+  }
 
-  </li>
+  function deleteitem(id, name)
+  {
 
-  <li class="treeview">
-    <a href="{{ url('antrian') }}">
-      <i class="fa fa-home"></i> <span>Antrian</span>
-    </a>
-    {{--
-    <ul class="treeview-menu">
-      <li>
-        <a href="{{ url('clients') }}">
-          <i class="fa fa-circle-o"></i> <span>Semua Pelanggan</span>
-        </a>
-      </li>
+    var deleteUrl = "{{ route('cashier.deleteitem', ':id') }}";
+    deleteUrl = deleteUrl.replace(':id', id);
+    if(confirm("Yakin hapus " + name + "?")){
+      $.ajax({
+        url : deleteUrl,
+        type : "GET",
+        dataType : "JSON",
+        success : function (data)
+        {
+          if(data.success == true)
+          {
+            var trId = "item" + data.removedItem;
+            $('#'+trId).remove();
 
-      <li>
-          <a href="{{ url('clients/create') }}">
-            <i class="fa fa-circle-o"></i> <span>Tambah Pelanggan</span>
-          </a>
-      </li>
-    </ul>
-    --}}
-  </li>
-  @endif
+            var grandTotal = 0;
+            $('#item-list .amount').each(function (){
+              grandTotal = grandTotal + Number($(this).html());
+            });
+            $('.grand-total').html('<b>' + grandTotal + '</b>');
+            // alert('hitung grand total');
+            //remove tr item
+            //hitung grand total
+          }
+        },
+        error  : function (data)
+        {
 
-</ul>
+        }
+      });
 
-@endsection
+    }
+  }
+
+  function clearitems()
+  {
+    var $_token = $('#token').val();
+    if(confirm('Yakin ingin hapus transaksi ini?'))
+    {
+      // alert('ekse tombol clear');
+
+      $.ajax({
+        url : "{{ route('cashier.clearitems') }}",
+        type : "POST",
+        dataType  : "JSON",
+        headers: { 'X-XSRF-TOKEN' : $_token },
+        success : function (data)
+        {
+          console.log(data);
+          $('#customer_id').val('');
+          $('#customer_name').val('');
+          $('#item-id').val('');
+          $('#item-name').val('');
+          $('#qty').val('');
+          $('#price').val('');
+          $('#amount').val('');
+          $('#item-list').empty();
+          $('.grand-total').html('<b>0</b>')
+        },
+        error: function (clearItemsError){}
+      });
+
+    }
+  }
+
+  function sub_total() {
+    // alert('hitung');
+    var qty = $("#qty").val();
+    var price = $("#price").val();
+    if(isNaN(qty)){
+      $("#qty").val(1);
+      var qty = $("#qty").val();
+      $("#amount").val(qty * price);
+    }else if(!qty){
+      // $("#qty").val(1);
+      // var qty = $("#qty").val();
+      $("#amount").val(0);
+    }else{
+      $("#amount").val(qty * price);
+    }
+
+
+  }
+
+  $( document ).ready(function() {
+
+    //grandTotal
+    var grandTotal = 0;
+    $('#item-list .amount').each(function (){
+      grandTotal = grandTotal + Number($(this).html());
+    });
+    $('.grand-total').html('<b>' + grandTotal + '</b>');
+
+
+    $("#item-name").autocomplete({
+      source: "{{ route('cashier.autocomplete') }}",
+      minLength: 1,
+      select: function( event, ui ) {
+        // alert('hello');
+        $("#item-id").val(ui.item.id);
+        $("#item-name").val(ui.item.value);
+        $("#qty").val(1);
+        $("#price").val(ui.item.price);
+        var qty = $("#qty").val();
+        var price = $("#price").val();
+        $("#amount").val(qty * price);
+      }
+    });
+
+    $("#customer_name").autocomplete({
+      source: "{{ route('cashier.autocompleteCustomer') }}",
+      minLength: 1,
+      select: function (event, ui) {
+        $("#customer_id").val(ui.item.id);
+        $("#customer_name").val(ui.item.name);
+        }
+    });
+
+
+
+    $(".add").click(function (e) {
+      e.preventDefault();
+
+      var url = "{{ route('cashier.additem') }}";
+      var info = $('.info');
+      var $_token = $("#token").val();
+      var formData = {
+        'customer_id' : $('#customer_id').val(),
+        // 'customer_id' : 'asu',
+        'id'     : $('#item-id').val(),
+        'qty'    : $('#qty').val(),
+      }
+      // alert(JSON.stringify(formData));
+
+
+      $.ajax({
+        type      : 'POST',
+        url       : url,
+        data      : formData,
+        dataType  : 'json',
+        headers   : { 'X-XSRF-TOKEN' : $_token },
+        success   : function (data) {
+          console.log(data);
+          info.hide().find('ul').empty();
+
+          if(data.success == false && data.is_rules == 0)
+          {
+            // alert(JSON.stringify(data.errors));
+            // alert('success false bro');
+
+            $.each(data.errors, function(index, error) {
+              // info.find('ul').append('<li>' + error + '</li>');
+              alert(error);
+            });
+
+            info.slideDown('fast')
+            info.delay(3000).slideUp('slow', function () {
+              info.find('ul').empty();
+            });
+
+          }
+          else if(data.success == undefined)
+          {
+            // alert(JSON.stringify(data.errors));
+            // alert('undefined bro');
+
+            $.each(data, function(index, error) {
+              info.find('ul').append('<li>' + error + '</li>');
+              // alert(error);
+            });
+
+
+            info.slideDown('fast')
+            info.delay(3000).slideUp('slow', function () {
+              info.find('ul').empty();
+            });
+            // info.fadeTo(2000, 500).slideUp(500, function (){
+            // });
+
+            // alert('undefined end');
+          }
+          else
+          {
+            var parameter = "" + data.data.id + ", '" + data.data.name + "'";
+            // alert(parameter);
+            var item = '<tr id="item' + data.data.id + '">';
+                item += '<td>' + data.data.name + '</td>';
+                item += '<td style="text-align:right;" class="quantity">' + data.data.qty + '</td>';
+                item += '<td style="text-align:right;">' + data.data.price + '</td>';
+                item += '<td style="text-align:right;" class="amount">' + data.data.amount + '</td>';
+                item += '<td style="text-align:center;">';
+                item += '<a href="#" onclick="deleteitem(' + parameter + ')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>';
+                item += '</td></tr>';
+
+            $('#item-list').append(item);
+            /*
+            var grandTotal = 0;
+            $('#item-list .amount').each(function (){
+              grandTotal = grandTotal + Number($(this).html());
+            });
+            */
+            $('.grand-total').html('<b>' + data.grandTotal + '</b>');
+            $('#item-id').val('');
+            $('#item-name').val('');
+            $('#qty').val('');
+            $('#price').val('');
+            $('#amount').val('');
+
+          }
+
+        },
+        error: function (data) {
+        }
+      });
+
+
+    });
+
+    $(".pay").click(function (e){
+      e.preventDefault();
+
+      var url = "{{ route('cashier.store') }}";
+
+      $.ajax({
+        type : 'GET',
+        url  : url,
+        success : function (data){
+          $('#customer_id').val('');
+          $('#customer_name').val('');
+          $('#item-id').val('');
+          $('#item-name').val('');
+          $('#qty').val('');
+          $('#price').val('');
+          $('#amount').val('');
+          $('#item-list').empty();
+          $('.grand-total').html('<b>0</b>')
+          alert('Transaksi berhasil');
+          window.location.href = "{{ route('cashier.antrian') }}";
+        },
+        error : function (data){
+
+        }
+      })
+
+    });
+
+  });
+  </script>
+@stop
 
 @section('content')
 <div class="content-wrapper">
@@ -234,264 +437,4 @@
   <!-- /.content -->
 </div>
 
-@endsection
-
-@section('autocomplete')
-<script type="text/javascript">
-
-function store()
-{
-
-}
-
-function deleteitem(id, name)
-{
-
-  var deleteUrl = "{{ route('cashier.deleteitem', ':id') }}";
-  deleteUrl = deleteUrl.replace(':id', id);
-  if(confirm("Yakin hapus " + name + "?")){
-    $.ajax({
-      url : deleteUrl,
-      type : "GET",
-      dataType : "JSON",
-      success : function (data)
-      {
-        if(data.success == true)
-        {
-          var trId = "item" + data.removedItem;
-          $('#'+trId).remove();
-
-          var grandTotal = 0;
-          $('#item-list .amount').each(function (){
-            grandTotal = grandTotal + Number($(this).html());
-          });
-          $('.grand-total').html('<b>' + grandTotal + '</b>');
-          // alert('hitung grand total');
-          //remove tr item
-          //hitung grand total
-        }
-      },
-      error  : function (data)
-      {
-
-      }
-    });
-
-  }
-}
-
-function clearitems()
-{
-  var $_token = $('#token').val();
-  if(confirm('Yakin ingin hapus transaksi ini?'))
-  {
-    // alert('ekse tombol clear');
-
-    $.ajax({
-      url : "{{ route('cashier.clearitems') }}",
-      type : "POST",
-      dataType  : "JSON",
-      headers: { 'X-XSRF-TOKEN' : $_token },
-      success : function (data)
-      {
-        console.log(data);
-        $('#customer_id').val('');
-        $('#customer_name').val('');
-        $('#item-id').val('');
-        $('#item-name').val('');
-        $('#qty').val('');
-        $('#price').val('');
-        $('#amount').val('');
-        $('#item-list').empty();
-        $('.grand-total').html('<b>0</b>')
-      },
-      error: function (clearItemsError){}
-    });
-
-  }
-}
-
-function sub_total() {
-  // alert('hitung');
-  var qty = $("#qty").val();
-  var price = $("#price").val();
-  if(isNaN(qty)){
-    $("#qty").val(1);
-    var qty = $("#qty").val();
-    $("#amount").val(qty * price);
-  }else if(!qty){
-    // $("#qty").val(1);
-    // var qty = $("#qty").val();
-    $("#amount").val(0);
-  }else{
-    $("#amount").val(qty * price);
-  }
-
-
-}
-
-$( document ).ready(function() {
-
-  //grandTotal
-  var grandTotal = 0;
-  $('#item-list .amount').each(function (){
-    grandTotal = grandTotal + Number($(this).html());
-  });
-  $('.grand-total').html('<b>' + grandTotal + '</b>');
-
-
-  $("#item-name").autocomplete({
-    source: "{{ route('cashier.autocomplete') }}",
-    minLength: 1,
-    select: function( event, ui ) {
-      // alert('hello');
-      $("#item-id").val(ui.item.id);
-      $("#item-name").val(ui.item.value);
-      $("#qty").val(1);
-      $("#price").val(ui.item.price);
-      var qty = $("#qty").val();
-      var price = $("#price").val();
-      $("#amount").val(qty * price);
-    }
-  });
-
-  $("#customer_name").autocomplete({
-    source: "{{ route('cashier.autocompleteCustomer') }}",
-    minLength: 1,
-    select: function (event, ui) {
-      $("#customer_id").val(ui.item.id);
-      $("#customer_name").val(ui.item.name);
-      }
-  });
-
-
-
-  $(".add").click(function (e) {
-    e.preventDefault();
-
-    var url = "{{ route('cashier.additem') }}";
-    var info = $('.info');
-    var $_token = $("#token").val();
-    var formData = {
-      'customer_id' : $('#customer_id').val(),
-      // 'customer_id' : 'asu',
-      'id'     : $('#item-id').val(),
-      'qty'    : $('#qty').val(),
-    }
-    // alert(JSON.stringify(formData));
-
-
-    $.ajax({
-      type      : 'POST',
-      url       : url,
-      data      : formData,
-      dataType  : 'json',
-      headers   : { 'X-XSRF-TOKEN' : $_token },
-      success   : function (data) {
-        console.log(data);
-        info.hide().find('ul').empty();
-
-        if(data.success == false && data.is_rules == 0)
-        {
-          // alert(JSON.stringify(data.errors));
-          // alert('success false bro');
-
-          $.each(data.errors, function(index, error) {
-            // info.find('ul').append('<li>' + error + '</li>');
-            alert(error);
-          });
-
-          info.slideDown('fast')
-          info.delay(3000).slideUp('slow', function () {
-            info.find('ul').empty();
-          });
-
-        }
-        else if(data.success == undefined)
-        {
-          // alert(JSON.stringify(data.errors));
-          // alert('undefined bro');
-
-          $.each(data, function(index, error) {
-            info.find('ul').append('<li>' + error + '</li>');
-            // alert(error);
-          });
-
-
-          info.slideDown('fast')
-          info.delay(3000).slideUp('slow', function () {
-            info.find('ul').empty();
-          });
-          // info.fadeTo(2000, 500).slideUp(500, function (){
-          // });
-
-          // alert('undefined end');
-        }
-        else
-        {
-          var parameter = "" + data.data.id + ", '" + data.data.name + "'";
-          // alert(parameter);
-          var item = '<tr id="item' + data.data.id + '">';
-              item += '<td>' + data.data.name + '</td>';
-              item += '<td style="text-align:right;" class="quantity">' + data.data.qty + '</td>';
-              item += '<td style="text-align:right;">' + data.data.price + '</td>';
-              item += '<td style="text-align:right;" class="amount">' + data.data.amount + '</td>';
-              item += '<td style="text-align:center;">';
-              item += '<a href="#" onclick="deleteitem(' + parameter + ')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>';
-              item += '</td></tr>';
-
-          $('#item-list').append(item);
-          /*
-          var grandTotal = 0;
-          $('#item-list .amount').each(function (){
-            grandTotal = grandTotal + Number($(this).html());
-          });
-          */
-          $('.grand-total').html('<b>' + data.grandTotal + '</b>');
-          $('#item-id').val('');
-          $('#item-name').val('');
-          $('#qty').val('');
-          $('#price').val('');
-          $('#amount').val('');
-
-        }
-
-      },
-      error: function (data) {
-      }
-    });
-
-
-  });
-
-  $(".pay").click(function (e){
-    e.preventDefault();
-
-    var url = "{{ route('cashier.store') }}";
-
-    $.ajax({
-      type : 'GET',
-      url  : url,
-      success : function (data){
-        $('#customer_id').val('');
-        $('#customer_name').val('');
-        $('#item-id').val('');
-        $('#item-name').val('');
-        $('#qty').val('');
-        $('#price').val('');
-        $('#amount').val('');
-        $('#item-list').empty();
-        $('.grand-total').html('<b>0</b>')
-        alert('Transaksi berhasil');
-        window.location.href = "{{ route('cashier.antrian') }}";
-      },
-      error : function (data){
-
-      }
-    })
-
-  });
-
-});
-</script>
 @endsection

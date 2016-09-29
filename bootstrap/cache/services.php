@@ -29,6 +29,7 @@
     25 => 'Collective\\Html\\HtmlServiceProvider',
     26 => 'Barryvdh\\DomPDF\\ServiceProvider',
     27 => 'Vinkla\\Pusher\\PusherServiceProvider',
+    28 => 'Barryvdh\\Snappy\\ServiceProvider',
   ),
   'eager' => 
   array (
@@ -47,6 +48,7 @@
     12 => 'App\\Providers\\RouteServiceProvider',
     13 => 'Barryvdh\\DomPDF\\ServiceProvider',
     14 => 'Vinkla\\Pusher\\PusherServiceProvider',
+    15 => 'Barryvdh\\Snappy\\ServiceProvider',
   ),
   'deferred' => 
   array (

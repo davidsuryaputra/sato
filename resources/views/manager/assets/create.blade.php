@@ -1,42 +1,89 @@
+@extends('manager.menu')
 
-<div class="pages">
-  <div data-page="projects" class="page no-toolbar no-navbar">
-    <div class="page-content">
+@section('content')
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      {{ $showroomName }}
+      <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Beranda</li>
+    </ol>
+  </section>
 
-     <div class="navbarpages">
-       <!-- <div class="nav_left_logo"><a href="index.html"><img src="mobix/images/logo.png" alt="" title="" /></a></div> -->
-       <div class="nav_right_button"><a href="{{ url('home') }}"><img src="mobix/images/icons/white/menu.png" alt="" title="" /></a></div>
-     </div>
-     <div id="pages_maincontent">
+  @if($showroomName != "Belum Ada Izin")
+  <!-- Main content -->
+  <section class="content">
+    <div class="box box-warning">
+          <div class="box-header with-border">
+            <h3 class="box-title">Tambah Aktiva Tetap</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <form role="form" action="{{ route('manager.assets.store') }}" method="POST">
+              {{ csrf_field() }}
+              <!-- text input -->
+              <div class="form-group {{ $errors->has('name') ? 'has-error' : ''  }}">
+                <label>Nama</label>
+                <input class="form-control" placeholder="Kursi" name="name" type="text">
 
-              <h2 class="page_title">Tambah Aktiva Tetap</h2>
-
-              <div class="page_content">
-
-                <div class="contactform">
-                <form action="{{ route('manager.assets.store') }}" method="POST">
-                  {{ csrf_field() }}
-
-                    <label>Nama</label>
-                    <input class="form_input" placeholder="Lemari" name="name" type="text">
-
-                    <label>Harga Pembelian</label>
-                    <input class="form_input" placeholder="2000000" name="value" type="text">
-
-                    <label>Jumlah</label>
-                    <input class="form_input" placeholder="5" name="quantity" type="text">
-
-                <input type="submit" name="submit" class="form_submit" id="submit" value="Tambah" />
-                </form>
-                </div>
-
-
+                @if($errors->has('name'))
+                <label class="control-label">
+                <i class="fa fa-times-circle-o"></i>
+                {{ $errors->first('name') }}
+                </label>
+                @endif
 
               </div>
 
-      </div>
+              <div class="form-group {{ $errors->has('value') ? 'has-error' : ''  }}">
+                <label>Harga Pembelian</label>
+                <input class="form-control" name="value" type="text">
 
+                @if($errors->has('value'))
+                <label class="control-label">
+                <i class="fa fa-times-circle-o"></i>
+                {{ $errors->first('value') }}
+                </label>
+                @endif
 
-    </div>
-  </div>
+              </div>
+
+              <div class="form-group {{ $errors->has('stocks') ? 'has-error' : ''  }}">
+                <label>Jumlah</label>
+                <input class="form-control" placeholder="5" name="quantity" type="text">
+
+                @if($errors->has('stocks'))
+                <label class="control-label">
+                <i class="fa fa-times-circle-o"></i>
+                {{ $errors->first('stocks') }}
+                </label>
+                @endif
+
+              </div>
+
+              <!-- select -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Tambah</button>
+              </div>
+
+            </form>
+          </div>
+          <!-- /.box-body -->
+        </div>
+  </section>
+
+  <!-- /.content -->
+  @else
+  <section class="content">
+    Silahkan Hubungi Manager
+  </section>
+  @endif
+
 </div>
+
+@endsection

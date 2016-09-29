@@ -19,6 +19,7 @@ class CreateItemsTable extends Migration
             $table->integer('item_category_id')->unsigned();
             $table->string('name');
             $table->integer('stock')->nullable();
+            $table->boolean('stockable')->nullable();
             $table->integer('value');
             $table->softDeletes();
             $table->timestamps();

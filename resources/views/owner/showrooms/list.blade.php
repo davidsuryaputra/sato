@@ -1,37 +1,94 @@
-<div class="pages">
-  <div data-page="projects" class="page no-toolbar no-navbar">
-    <div class="page-content">
+@extends('owner.menu')
 
-     <div class="navbarpages">
-       <!-- <div class="nav_left_logo"><a href="index.html"><img src="mobix/images/logo.png" alt="" title="" /></a></div> -->
-       <div class="nav_right_button"><a href="{{ url('home') }}"><img src="mobix/images/icons/white/menu.png" alt="" title="" /></a></div>
-     </div>
+@section('content')
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Beranda
+      <small>Control panel</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Beranda</li>
+    </ol>
+  </section>
 
-     <div id="pages_maincontent">
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+          <div class="col-xs-12">
+            <div class="box">
+              <div class="box-header">
+                <h3 class="box-title">Semua Outlet</h3>
 
-              <h2 class="page_title">Semua Showroom</h2>
+                <div class="box-tools">
+                  {{--
+                  <div class="input-group input-group-sm" style="width: 150px;">
+                    <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
 
-              <div class="page_content">
-
-                <div class="blog-posts">
-
-                <ul class="posts">
-                  @foreach($showrooms as $showroom)
-                  <li>
-                      <div class="post_entry">
-                          <div class="post_title">
-                          <h2><a href="{{ route('owner.showrooms.show', $showroom->id) }}">{{ $showroom->name }}</a></h2>
-                          </div>
-                      </div>
-                  </li>
-                  @endforeach
-                </ul>
-
+                    <div class="input-group-btn">
+                      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </div>
+                  </div>
+                  --}}
                 </div>
               </div>
-      </div>
+              <!-- /.box-header -->
+              <div class="box-body table-responsive no-padding">
 
 
-    </div>
-  </div>
+                <table class="table table-hover">
+                  <tbody><tr>
+                    <th>Nama</th>
+                    <th>Alamat</th>
+                    <th>Kota</th>
+                    <th>Telepon</th>
+                    <th>Tanggal Buka</th>
+                    <th>Saldo</th>
+                    <th>Manajer</th>
+                    <th>Pilihan</th>
+                  </tr>
+
+                  @foreach($showrooms as $showroom)
+                  <tr>
+                    <td>{{ $showroom->name }}</td>
+                    <td>{{ $showroom->address }}</td>
+                    <td>{{ $showroom->city }}</td>
+                    <td>{{ $showroom->phone }}</td>
+                    <td>{{ $showroom->created_at }}</td>
+                    <td>{{ $showroom->balance }}</td>
+                    <td>{{ $showroom->manager->name or 'Belum Ada' }}</td>
+                    <td>
+                      <a href="{{ route('owner.showrooms.destroy', $showroom->id) }}" role="button" class="btn btn-danger">Delete</a>
+                      <a href="{{ route('owner.showrooms.edit', $showroom->id) }}" role="button" class="btn btn-warning">Edit</a>
+                      <a href="{{ route('owner.showrooms.pendapatan', $showroom->id) }}" role="button" class="btn btn-info">Pendapatan</a>
+                      <a href="{{ route('owner.showrooms.pengeluaran', $showroom->id) }}" role="button" class="btn btn-info">Pengeluaran</a>
+                    </td>
+                  </tr>
+                  @endforeach
+
+                </tbody></table>
+
+              </div>
+              <!-- /.box-body -->
+              {{--
+              <div class="box-footer clearfix">
+                <ul class="pagination pagination-sm no-margin pull-right">
+                  <li><a href="#">«</a></li>
+                  <li><a href="#">1</a></li>
+                  <li><a href="#">2</a></li>
+                  <li><a href="#">3</a></li>
+                  <li><a href="#">»</a></li>
+                </ul>
+              </div>
+              --}}
+            </div>
+            <!-- /.box -->
+          </div>
+        </div>
+  </section>
+  <!-- /.content -->
 </div>
+
+@endsection

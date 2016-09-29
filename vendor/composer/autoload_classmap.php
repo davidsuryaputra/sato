@@ -21,6 +21,7 @@ return array(
     'CreateQueuesTable' => $baseDir . '/database/migrations/2016_07_30_104617_create_queues_table.php',
     'CreateRolesTable' => $baseDir . '/database/migrations/2016_06_10_145637_create_roles_table.php',
     'CreateSalaryTable' => $baseDir . '/database/migrations/2016_06_16_085806_create_salary_table.php',
+    'CreateSessionsTable' => $baseDir . '/database/migrations/2016_09_29_121828_create_sessions_table.php',
     'CreateShowroomsTable' => $baseDir . '/database/migrations/2016_06_11_184817_create_showrooms_table.php',
     'CreateTransactionDetailsTable' => $baseDir . '/database/migrations/2016_06_11_203637_create_transaction_details_table.php',
     'CreateTransactionsTable' => $baseDir . '/database/migrations/2016_06_11_203617_create_transactions_table.php',

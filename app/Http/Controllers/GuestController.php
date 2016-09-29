@@ -17,7 +17,7 @@ class GuestController extends Controller
         $showroom = Showroom::find($id);
         $showroomName = $showroom->name;
 
-      $queues = Queue::where('showroom_id', $id)->whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan', 'Selesai'])->get();
+      $queues = Queue::where('showroom_id', $id)->whereIn('status', ['Menunggu', 'Dicuci', 'Pengeringan'])->get();
 
       $showroom_id = $id;
 

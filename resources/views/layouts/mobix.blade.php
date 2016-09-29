@@ -29,6 +29,31 @@
 
       <div class="view view-main">
 
+        @yield('anu')
+        <!--
+        <div class="pages toolbar-through">
+        <div data-page="projects" class="page no-toolbar no-navbar">
+        <div class="page-content">
+
+        <div class="page_content_menu">
+         <nav class="main-nav">
+          <ul>
+            <li><a href="{{ url('terimaPelanggan') }}"><img src="mobix/images/icons/white/user.png" alt="" title="" /><span>Terima Pelanggan</span></a></li>
+            <li><a href="{{ url('antrian') }}"><img src="mobix/images/icons/white/team.png" alt="" title="" /><span>Lihat Antrian</span></a></li>
+            <li><a href="{{ url('layarAntrian/1') }}" target="_blank" class="external"><img src="mobix/images/icons/white/toogle.png" alt="" title="" /><span>Layar Antrian</span></a></li>
+          </ul>
+        </nav>
+        <div class="close_popup_button"><a href="#" class="backbutton"><img src="images/icons/white/menu_close.png" alt="" title="" /></a></div>
+        </div>
+
+        </div>
+
+        </div>
+        </div>
+        -->
+
+
+        <!--
         <div class="pages toolbar-through">
 
           <div data-page="index" class="page homepage">
@@ -37,6 +62,7 @@
             </div>
           </div>
         </div>
+      -->
 
         @yield('toolbar')
 
@@ -112,8 +138,13 @@
         //loading animation
         var id = data.status+""+data.id;
         $("a[id="+id+"]").remove();
-        $("a[id=Kasir"+data.id+"]").removeClass('disabled');
+        // $("a[id=Kasir"+data.id+"]").removeClass('disabled');
         $("p[class=status"+data.id+"]").html(data.status);
+        setTimeout(function (){
+          // $("tr[id="+data.id+"]").remove();
+          window.location.href = "{{ route('home') }}";
+          // window.location.href = "{{ route('home') }}" + "#!/" + "{{ route('operator.antrian') }}";
+        }, 5000);
       });
     }
 
