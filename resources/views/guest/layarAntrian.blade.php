@@ -254,7 +254,7 @@
 $(document).ready(function (){
   $('#success').hide();
   $('#layarAntrian').DataTable({
-    'lengthMenu': [2, 10, 25],
+    'lengthMenu': [10, 20],
     'createdRow': function (row, data, dataIndex){
       var id = data[0];
       //id = id.replace('#', '');
