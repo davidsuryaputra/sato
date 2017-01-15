@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="{{ url('plugins/daterangepicker/daterangepicker-bs3.css') }}">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="{{ url('plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css') }}">
+  <!-- <link rel="stylesheet" href="{{ url('plugins/datatables/dataTables.bootstrap.css') }}"> -->
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -102,98 +103,129 @@
     <!-- <section class="content"> -->
       <div class="row">
             <div class="col-xs-12">
-              <div class="box">
-                <div class="box-header">
-                  <h3 class="box-title">Daftar Antrian {{ $showroomName }}</h3>
 
-                  <div class="box-tools">
-                    {{--
-                    <div class="input-group input-group-sm" style="width: 150px;">
-                      <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
-
-                      <div class="input-group-btn">
-                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                      </div>
-                    </div>
-                    --}}
-                  </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
-
-                  <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>No</th>
-                        <th>Jenis</th>
-                        <th>No Kendaraan</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody class="queue">
-                      @foreach($queues as $queue)
-                      <tr id="{{ $queue->id }}">
-                        <td>#{{ $queue->id }}</td>
-                        <td>{{ $queue->item->name }}</td>
-                        <td>{{ $queue->no_kendaraan }}</td>
-                        <td id="{{ $queue->id }}">{{ $queue->status }}</td>
-                      </tr>
-                      @endforeach
-                    </tbody>
-                  </table>
-
-                </div>
-                <!-- /.box-body -->
-                {{--
-                <div class="box-footer clearfix">
-                  <ul class="pagination pagination-sm no-margin pull-right">
-                    <li><a href="#">«</a></li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">»</a></li>
-                  </ul>
-                </div>
-                --}}
+              <div class="alert alert-success" id="success">
               </div>
-              <!-- /.box -->
-            </div>
+              <div class="panel panel-default">
+                  <div class="panel-heading">Daftar Antrian {{ $showroomName }}</div>
+                  <div class="panel-body">
+                    <table id="layarAntrian" class="table table-hover table-striped">
+                      <thead>
+                        <tr style="background-color:#87CEFA; color:white;">
+                          <th>No</th>
+                          <th>Jenis</th>
+                          <th>No Kendaraan</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="queue">
+                        @foreach($queues as $queue)
+                        <tr id="{{ $queue->id }}">
+                          <td>{{ $queue->id }}</td>
+                          <td>{{ $queue->item->name }}</td>
+                          <td>{{ $queue->no_kendaraan }}</td>
+                          <td id="{{ $queue->id }}">{{ $queue->status }}</td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
           </div>
     <!-- </section> -->
     <!-- /.content -->
   </div>
 
+
+  <!-- jQuery 2.2.0 -->
+  <script src="{{ url('plugins/jQuery/jQuery-2.2.0.min.js') }}"></script>
+  <!-- jQuery UI 1.11.4 -->
+  <script src="{{ url('plugins/jQueryUI/jquery-ui.min.js') }}"></script>
   <script src="//js.pusher.com/3.0/pusher.min.js"></script>
   <script>
   var pusher = new Pusher("{{ env('PUSHER_KEY') }}");
   var channel = pusher.subscribe('antrian');
   channel.bind('newAntrian', function (data){
+
     if(data.showroom_id == {{ $queue->showroom_id or '0' }}){
-      var tr = "<tr id="+data.id+"><td>#"+data.id+"</td><td>"+data.jenis+"</td><td>"+data.no_kendaraan+"</td><td id='"+data.id+"'>"+data.status+"</td></tr>";
+      var dataId = data.id;
+      var no_kendaraan = data.no_kendaraan;
+      //var tr = "<tr id="+data.id+"><td>#"+data.id+"</td><td>"+data.jenis+"</td><td>"+data.no_kendaraan+"</td><td id='"+data.id+"'>"+data.status+"</td></tr>";
       $('.queue').hide();
       $('.queue').fadeIn('slow');
-      $('.queue').append(tr);
+      //$('.queue').append(tr);
+      var table = $("#layarAntrian").DataTable();
+
+      table.row.add([
+        data.id,
+        data.jenis,
+        data.no_kendaraan,
+        data.status
+      ]).draw();
+      /*
+      var rowIndex = table.fnAddData(['id', 'jenis', 'no plat', 'status']);
+      var row = table.fnGetNodes(rowIndex);
+      $(row).attr('id', 'uniq id');
+      */
+
     }
 
-    // alert(data.message);
+    $('#success').fadeIn('slow', function(){
+      $('#success').html(data.no_kendaraan + ' Berhasil ditambahkan.');
+    }).delay(5000).fadeOut();
+
   });
   channel.bind('updateAntrian', function (data){
     if(data.showroom_id == {{ $queue->showroom_id or '0' }}){
 
-      if(data.status == "Selesai"){
-        $('.queue').hide();
-        $('.queue').fadeIn('slow');
-        $("td[id="+data.id+"]").html(data.status);
-        setTimeout(function (){
-          $("tr[id="+data.id+"]").remove();
-        }, 5000);
-      }
+      var no_kendaraan = data.no_kendaraan;
+      var table = $('#layarAntrian').DataTable();
 
-      $('.queue').hide();
-      $('.queue').fadeIn('slow');
-      $("td[id="+data.id+"]").html(data.status);
-    }
-  });
+        if(data.status == "Selesai"){
+          $('#success').html('Antrian ' + data.id + ' Selesai.');
+          $('#success').fadeIn('slow').delay(10000).fadeOut();
+          table.rows('#' + data.id).remove().draw();
+          /*
+          table.rows().every(function (rowIdx, tableLoop, rowLoop){
+            var currentRow = this.data();
+            if(currentRow[0] == data.id){
+              currentRow[3] = data.status;
+              this.data(currentRow);
+              $('#success').html('Antrian ' + data.id + ' Selesai.');
+              $('#success').fadeIn('slow').delay(5000).fadeOut();
+              table.row(this).remove().draw();
+              return false;
+            }
+
+
+          });
+          */
+
+          /*
+          $('.queue').hide();
+          $('.queue').fadeIn('slow');
+          $("td[id="+data.id+"]").html(data.status);
+          setTimeout(function (){
+            $("tr[id="+data.id+"]").remove();
+          }, 5000);
+          */
+        }
+
+
+        table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+
+          var currentRow = this.data();
+          if(currentRow[0] == data.id){
+            currentRow[3] = data.status;
+            this.data(currentRow);
+            $('#success').html('Antrian ' + data.id + ' ' + data.status);
+            $('#success').fadeIn('slow').delay(5000).fadeOut();
+            return false;
+          }
+        });
+
+      }
+    });
   </script>
 
   <!-- /.content-wrapper -->
@@ -211,13 +243,37 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery 2.2.0 -->
-<script src="{{ url('plugins/jQuery/jQuery-2.2.0.min.js') }}"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="{{ url('plugins/jQueryUI/jquery-ui.min.js') }}"></script>
+
 
 <!-- Bootstrap 3.3.6 -->
 <script src="{{ url('bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ url('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url('plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+
+<script>
+$(document).ready(function (){
+  $('#success').hide();
+  $('#layarAntrian').DataTable({
+    'lengthMenu': [2, 10, 25],
+    'createdRow': function (row, data, dataIndex){
+      var id = data[0];
+      //id = id.replace('#', '');
+      $(row).attr('id', id);
+    },
+    'columnDefs': [
+      {
+        'targets': 3,
+        'createdCell': function(td, cellData, rowData, row, col){
+          var id = rowData[0];
+          //id = id.replace('#', '');
+          $(td).attr('id', id);
+        }
+      }
+    ]
+    //"columns": ['id', 'jenis']
+  });
+});
+</script>
 {{--
 <!-- Morris.js charts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
