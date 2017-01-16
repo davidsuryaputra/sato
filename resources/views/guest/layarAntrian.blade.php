@@ -111,7 +111,7 @@
                   <div class="panel-body">
                     <table id="layarAntrian" class="table table-hover table-striped">
                       <thead>
-                        <tr style="background-color:#87CEFA; color:white;">
+                        <tr style="background-color:#87CEFA; color:black;">
                           <th>No</th>
                           <th>Jenis</th>
                           <th>No Kendaraan</th>
